@@ -12,7 +12,7 @@ tools:
             paths: ["lib/*", "tests/*"]
     php_cpd:
         enabled: true
-        excluded_dirs: ["build", "docs", "tests", "vendor"]
+        excluded_dirs: ["build", "tests", "vendor"]
     php_cs_fixer:
         enabled: true
         config:
