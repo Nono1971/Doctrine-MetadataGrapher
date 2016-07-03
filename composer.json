@@ -27,7 +27,7 @@
         "doctrine/common":  ">=2.5"
     },
     "require-dev":          {
-        "phpunit/phpunit":  "4.4.0"
+        "phpunit/phpunit":  "~4.0"
     },
     "suggest":              {
         "onurb/doctrine-yuml-bundle":            "if you use symfony, you will like this little tool"
