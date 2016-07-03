@@ -1,5 +1,7 @@
 # Metagatagrapher for Doctrine ORM Module for Zend Framework 2 and Onurb Yuml Bundle for symfony 3 (compatible with symfony 2)
 
+[![Build Status](https://travis-ci.org/Nono1971/Doctrine-MetadataGrapher.svg?branch=master)](https://travis-ci.org/Nono1971/Doctrine-MetadataGrapher)
+
 MetadataGrapher formats objects data to prepare graph generated with yuml.me api
 
 ## Installation

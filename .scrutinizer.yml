@@ -32,5 +32,5 @@ tools:
     php_analyzer: true
     php_analyzer:
         filter:
-            paths: ["lib/*", "tests/*"]
+            paths: ["lib/*"]
     sensiolabs_security_checker: true
