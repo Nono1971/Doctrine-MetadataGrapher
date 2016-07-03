@@ -169,7 +169,7 @@ class YUMLMetadataGrapher
     {
         $className    = $class->getName();
         if (!isset($this->classStrings[$className])) {
-            $this->visitAssociation($class->getName());
+            $this->visitAssociation($className);
 
             $classText    = '[' . str_replace('\\', '.', $className);
             $fields       = array();
@@ -197,7 +197,7 @@ class YUMLMetadataGrapher
             $this->classStrings[$className] = $classText;
         }
 
-        return $this->classStrings[$class->getName()];
+        return $this->classStrings[$className];
     }
 
     /**
