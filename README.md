@@ -6,8 +6,6 @@ MetadataGrapher formats objects data to prepare graph generated with yuml.me api
 
 ## Installation
 
-Installing this bundle can be done through these simple steps:
-
 - add to your project as a composer dependency:
 ```javascript
     // composer.json
@@ -22,11 +20,11 @@ Installing this bundle can be done through these simple steps:
 
 ### Use
 
-Send an array of Doctrine ClassMetadata
-to the YUMLMetadataGrapher::generateFromMetadata() method
+Send an array of Doctrine ClassMetadata to the YUMLMetadataGrapher::generateFromMetadata() method
 it returns the string to send to yuml.me to get the mapping graph from the api
 
-if you're a symfony user, I recommand to install instead onurb/doctrine-yuml-bundle wich use this library
+if you're a symfony user, you should install onurb/doctrine-yuml-bundle wich already uses this library
+adding a link into the dev toolbar.
 if you're Zend framework user, it is included into the DoctrineORMModule if you install zend-developer-tools
 
 go to there github repos for concrete examples of use
