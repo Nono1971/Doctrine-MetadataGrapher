@@ -1,5 +1,5 @@
 {
-    "name":                 "Onurb/doctrine-metadata-grapher",
+    "name":                 "onurb/doctrine-metadata-grapher",
     "description":          "Doctrine library that formats doctrine metadata for UML API",
     "type":                 "library",
     "licence":              "MIT",
