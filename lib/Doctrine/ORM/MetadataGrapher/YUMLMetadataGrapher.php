@@ -104,8 +104,7 @@ class YUMLMetadataGrapher
         $class1Count     = $class1->isCollectionValuedAssociation($association) ? 2 : 1;
 
         if (null === $class2) {
-            return $this->makeSingleClassString(
-                $class1, $isInverse, $association, $class1Count, $targetClassName);
+            return $this->makeSingleClassString($class1, $isInverse, $association, $class1Count, $targetClassName);
         }
 
         $class1SideName = $association;
@@ -281,8 +280,13 @@ class YUMLMetadataGrapher
      * @param string $targetClassName
      * @return string
      */
-    private function makeSingleClassString(ClassMetadata $class1, $isInverse, $association, $class1Count, $targetClassName)
-    {
+    private function makeSingleClassString(
+        ClassMetadata $class1,
+        $isInverse,
+        $association,
+        $class1Count,
+        $targetClassName
+    ) {
         return $this->getClassString($class1)
         . ($isInverse ? '<' : '<>')
         . '-' . $association
@@ -305,9 +309,15 @@ class YUMLMetadataGrapher
      * @return string
      */
     private function makeDoubleClassString(
-        ClassMetadata $class1, ClassMetadata $class2, $bidirectional, $isInverse, $class2SideName, $class2Count,
-        $class1SideName, $class1Count)
-    {
+        ClassMetadata $class1,
+        ClassMetadata $class2,
+        $bidirectional,
+        $isInverse,
+        $class2SideName,
+        $class2Count,
+        $class1SideName,
+        $class1Count
+    ) {
         return $this->getClassString($class1)
         . ($bidirectional ? ($isInverse ? '<' : '<>') : '') // class2 side arrow
         . ($class2SideName ? $class2SideName . ' ' : '')
