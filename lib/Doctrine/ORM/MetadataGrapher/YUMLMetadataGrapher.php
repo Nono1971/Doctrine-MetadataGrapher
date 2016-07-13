@@ -148,9 +148,9 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
     {
         if ($class1->getAssociationMapping($association)['isOwningSide']) {
             return $class1->getAssociationMapping($association)['inversedBy'];
-        } else {
-            return $class1->getAssociationMapping($association)['mappedBy'];
         }
+
+        return $class1->getAssociationMapping($association)['mappedBy'];
     }
 
     /**
