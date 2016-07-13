@@ -29,7 +29,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  * @author  Marco Pivetta   <ocramius@gmail.com>
  * @author  Bruno Heron     <<herobrun@gmail.com>
  */
-class YUMLMetadataGrapher
+class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
 {
     /**
      * Temporary array where already visited collections are stored
@@ -287,12 +287,8 @@ class YUMLMetadataGrapher
         $class1Count,
         $targetClassName
     ) {
-        return $this->getClassString($class1)
-        . ($isInverse ? '<' : '<>')
-        . '-' . $association
-        . ' '
-        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : ''))
-        . ($isInverse ? '<>' : '>')
+        return $this->getClassString($class1) . ($isInverse ? '<' : '<>') . '-' . $association . ' '
+        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : '')) . ($isInverse ? '<>' : '>')
         . '[' . str_replace('\\', '.', $targetClassName) . ']';
     }
 
@@ -318,15 +314,9 @@ class YUMLMetadataGrapher
         $class1SideName,
         $class1Count
     ) {
-        return $this->getClassString($class1)
-        . ($bidirectional ? ($isInverse ? '<' : '<>') : '') // class2 side arrow
-        . ($class2SideName ? $class2SideName . ' ' : '')
-        . ($class2Count > 1 ? '*' : ($class2Count ? '1' : '')) // class2 side single/multi valued
-        . '-'
-        . $class1SideName
-        . ' '
-        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : '')) // class1 side single/multi valued
-        . (($bidirectional && $isInverse) ? '<>' : '>') // class1 side arrow
-        . $this->getClassString($class2);
+        return $this->getClassString($class1) . ($bidirectional ? ($isInverse ? '<' : '<>') : '')
+        . ($class2SideName ? $class2SideName . ' ' : '') . ($class2Count > 1 ? '*' : ($class2Count ? '1' : ''))
+        . '-' . $class1SideName . ' ' . ($class1Count > 1 ? '*' : ($class1Count ? '1' : ''))
+        . (($bidirectional && $isInverse) ? '<>' : '>') . $this->getClassString($class2);
     }
 }

@@ -31,7 +31,7 @@
         "squizlabs/php_codesniffer":          "~2"
     },
     "suggest":              {
-        "onurb/doctrine-yuml-bundle":            "if you use symfony, you will like this little tool"
+        "onurb/doctrine-yuml-bundle": "bundle to use this library in symfony - not compatible with odm yet"
     },
     "autoload":             {
         "psr-4":    { "Doctrine\\ORM\\MetadataGrapher\\":"lib/Doctrine/ORM/MetadataGrapher/" }
