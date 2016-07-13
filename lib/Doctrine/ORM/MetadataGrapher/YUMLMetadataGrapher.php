@@ -104,6 +104,8 @@ class YUMLMetadataGrapher
         $class1Count     = $class1->isCollectionValuedAssociation($association) ? 2 : 1;
 
         if (null === $class2) {
+            $classString = $this->makeSingleClassString($class1, $isInverse, $association, $class1Count, $targetClassName);
+            echo $classString;
             return $this->getClassString($class1)
             . ($isInverse ? '<' : '<>') . '-' . $association . ' '
             . ($class1Count > 1 ? '*' : ($class1Count ? '1' : ''))
@@ -128,15 +130,8 @@ class YUMLMetadataGrapher
 
         $this->visitAssociation($targetClassName, $class2SideName);
 
-        return $this->getClassString($class1)
-        . ($bidirectional ? ($isInverse ? '<' : '<>') : '') // class2 side arrow
-        . ($class2SideName ? $class2SideName . ' ' : '')
-        . ($class2Count > 1 ? '*' : ($class2Count ? '1' : '')) // class2 side single/multi valued
-        . '-'
-        . $class1SideName . ' '
-        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : '')) // class1 side single/multi valued
-        . (($bidirectional && $isInverse) ? '<>' : '>') // class1 side arrow
-        . $this->getClassString($class2);
+        return $this->makeDoubleClassString($class1, $class2, $bidirectional, $isInverse, $class2SideName,
+            $class2Count, $class1SideName, $class1Count);
     }
 
     /**
@@ -273,5 +268,48 @@ class YUMLMetadataGrapher
         $this->visitedAssociations[$className][$association] = true;
 
         return true;
+    }
+
+    /**
+     * @param ClassMetadata $class1
+     * @param boolean $isInverse
+     * @param string $association
+     * @param int $class1Count
+     * @param string $targetClassName
+     * @return string
+     */
+    private function makeSingleClassString(ClassMetadata $class1, $isInverse, $association, $class1Count, $targetClassName)
+    {
+        return $this->getClassString($class1)
+        . ($isInverse ? '<' : '<>') . '-' . $association . ' '
+        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : ''))
+        . ($isInverse ? '<>' : '>')
+        . '[' . str_replace('\\', '.', $targetClassName) . ']';
+    }
+
+    /**
+     * @param ClassMetadata $class1
+     * @param ClassMetadata $class2
+     * @param boolean $bidirectional
+     * @param boolean $isInverse
+     * @param string $class2SideName
+     * @param integer $class2Count
+     * @param string $class1SideName
+     * @param integer $class1Count
+     *
+     * @return string
+     */
+    private function makeDoubleClassString(ClassMetadata $class1, ClassMetadata $class2, $bidirectional, $isInverse,
+                                           $class2SideName, $class2Count, $class1SideName, $class1Count)
+    {
+        return $this->getClassString($class1)
+        . ($bidirectional ? ($isInverse ? '<' : '<>') : '') // class2 side arrow
+        . ($class2SideName ? $class2SideName . ' ' : '')
+        . ($class2Count > 1 ? '*' : ($class2Count ? '1' : '')) // class2 side single/multi valued
+        . '-'
+        . $class1SideName . ' '
+        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : '')) // class1 side single/multi valued
+        . (($bidirectional && $isInverse) ? '<>' : '>') // class1 side arrow
+        . $this->getClassString($class2);
     }
 }
