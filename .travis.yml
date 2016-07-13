@@ -9,15 +9,17 @@ php:
 
 matrix:
     allow_failures:
-        - php: 7
         - php: hhvm
 
 before_script:
     - composer update --prefer-source
+    - rm -f ./vendor/doctrine/common/lib/Doctrine/Common/Persistence/Mapping/ClassMetadata.php
+    - mv ./build/ClassMetadata.php.travis.dist ./vendor/doctrine/common/lib/Doctrine/Common/Persistence/Mapping/ClassMetadata.php
 
 script:
     - ./vendor/bin/phpunit --coverage-clover ./build/clover.xml
     - if [ $TRAVIS_PHP_VERSION != 'hhvm' ] && [ $TRAVIS_PHP_VERSION != '7' ]; then php build/coverage-checker.php build/clover.xml 70; fi
+    - ./vendor/bin/phpcs --standard=PSR2 ./lib/ ./tests/
 
 after_script:
     - if [ $TRAVIS_PHP_VERSION != 'hhvm' ] && [ $TRAVIS_PHP_VERSION != '7' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi

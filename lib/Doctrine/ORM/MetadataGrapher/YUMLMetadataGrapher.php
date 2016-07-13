@@ -88,7 +88,6 @@ class YUMLMetadataGrapher
                 }
             }
         }
-
         return implode(',', $str);
     }
 
@@ -113,7 +112,7 @@ class YUMLMetadataGrapher
         }
 
         $class1SideName = $association;
-        $class2SideName = $this->getClassReverseAssociationName($class1, $class2);
+        $class2SideName = $this->getClassReverseAssociationName($class1, $association);
         $class2Count    = 0;
         $bidirectional  = false;
 
@@ -144,18 +143,17 @@ class YUMLMetadataGrapher
      * Returns the $class2 association name for $class1 if reverse related (or null if not)
      *
      * @param ClassMetadata $class1
-     * @param ClassMetadata $class2
+     * @param string $association
+     *
      * @return string|null
      */
-    private function getClassReverseAssociationName(ClassMetadata $class1,  ClassMetadata $class2)
+    private function getClassReverseAssociationName(ClassMetadata $class1, $association)
     {
-        foreach ($class2->getAssociationNames() as $class2Side) {
-            $targetClass = $this->getClassByName($class2->getAssociationTargetClass($class2Side));
-            if ($class1->getName() === $targetClass->getName()) {
-                return $class2Side;
-            }
+        if ($class1->getAssociationMapping($association)['isOwningSide']) {
+            return $class1->getAssociationMapping($association)['inversedBy'];
+        } else {
+            return $class1->getAssociationMapping($association)['mappedBy'];
         }
-        return null;
     }
 
     /**
@@ -209,7 +207,7 @@ class YUMLMetadataGrapher
      */
     private function getClassByName($className)
     {
-        return isset($this->metadata[$className])? $this->metadata[$className]: null;
+        return isset($this->metadata[$className]) && !empty($this->metadata[$className])? $this->metadata[$className]: null;
     }
 
     /**

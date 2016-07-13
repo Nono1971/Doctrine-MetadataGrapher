@@ -88,6 +88,12 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    =>null
+        )));
+
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -109,6 +115,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    =>'a'
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -117,6 +128,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'b',
+            'inversedBy'    => null
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class2->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('b'));
@@ -134,6 +150,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'a',
+            'inversedBy'    => null
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('a'));
@@ -143,11 +164,16 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'a'
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
-
-        $this->assertSame('[A]<a 1-b 1<>[B]', $this->grapher->generateFromMetadata(array($class1, $class2)));
+        $expected = "[A]<a 1-b 1<>[B]";
+        $this->assertSame($expected, $this->grapher->generateFromMetadata(array($class1, $class2)));
     }
 
     /**
@@ -159,6 +185,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'a'
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -167,6 +198,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'b',
+            'inversedBy'    => null
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class2->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('b'));
@@ -184,6 +220,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'a'
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -192,6 +233,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'b',
+            'inversedBy'    => null
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class2->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('b'));
@@ -209,6 +255,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => null
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -235,6 +286,12 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(null));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => null
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -251,6 +308,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'a'
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -259,6 +321,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'a',
+            'inversedBy'    => null
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class2->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('b'));
@@ -276,6 +343,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'a',
+            'inversedBy'    => null
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('a'));
@@ -285,6 +357,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'b'
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -301,6 +378,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => null
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -366,6 +448,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('stdClass'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
+
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -425,26 +508,39 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('c')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('C'));
+        $class1->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => null
+        )));
         $class1->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+
 
         $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('c')));
         $class2->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('C'));
+        $class2->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => true,
+            'mappedBy'      => null,
+            'inversedBy'    => 'b'
+        )));
         $class2->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
+
         $class3 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class3->expects($this->any())->method('getName')->will($this->returnValue('C'));
         $class3->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('b')));
-        $class3
-            ->expects($this->any())
-            ->method('getAssociationTargetClass')
-            ->with($this->logicalOr($this->equalTo('b'), $this->equalTo('c')))
-            ->will($this->returnCallback(array($this,'getAssociationTargetClassMock')));
+        $class3->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('B'));
+        $class3->expects($this->any())->method('getAssociationMapping')->will($this->returnValue(array(
+            'isOwningSide' => false,
+            'mappedBy'      => 'c',
+            'inversedBy'    => null
+        )));
         $class3->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
         $class3->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class3->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -468,5 +564,128 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     public function getAssociationTargetClassMock($a)
     {
         return strtoupper($a);
+    }
+
+    /**
+     * @return array
+     */
+    public function injectTwoClassesWithTwoDifferentRelationsOneToManyBidirectionnal()
+    {
+        $classAB = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classAB->expects($this->any())->method('getName')->will($this->returnValue('AB'));
+        $classAB->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('c','d')));
+        $classAB
+            ->expects($this->any())
+            ->method('getAssociationTargetClass')
+            ->with($this->logicalOr($this->equalTo('c'), $this->equalTo('d')))
+            ->will($this->returnCallback(array($this, 'getAssociationClassMock')));
+        $classAB
+            ->expects($this->any())
+            ->method('getAssociationMapping')
+            ->with($this->logicalOr(
+                $this->equalTo('c'),
+                $this->equalTo('d')
+            ))
+            ->will($this->returnCallback(array($this, 'getAssociationMappingMock')));
+        $classAB->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(true));
+        $classAB->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
+        $classAB->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+
+        $classCD = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classCD->expects($this->any())->method('getName')->will($this->returnValue('CD'));
+        $classCD->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a','b')));
+        $classCD
+            ->expects($this->any())
+            ->method('getAssociationTargetClass')
+            ->with($this->logicalOr($this->equalTo('a'), $this->equalTo('b')))
+            ->will($this->returnCallback(array($this, 'getAssociationClassMock')));
+        $classCD
+            ->expects($this->any())
+            ->method('getAssociationMapping')
+            ->with($this->logicalOr(
+                $this->equalTo('a'),
+                $this->equalTo('b')
+            ))
+            ->will($this->returnCallback(array($this, 'getAssociationMappingMock')));
+        $classCD->expects($this->any())->method('isAssociationInverseSide')->will($this->returnValue(false));
+        $classCD->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
+        $classCD->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+
+        return array(
+            array($classAB, $classCD, "[AB]<a 1-c *<>[CD],[AB]<b 1-d *<>[CD]"),
+            array($classCD, $classAB, "[CD]<>c *-a 1>[AB],[CD]<>d *-b 1>[AB]"),
+        );
+    }
+
+    /**
+     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @dataProvider injectTwoClassesWithTwoDifferentRelationsOneToManyBidirectionnal
+     */
+    public function testMultipleRelationsManyToOneBeetweenTwoSameClasses($class1, $class2, $expected)
+    {
+        $this->assertSame(
+            $expected,
+            $this->grapher->generateFromMetadata(array($class1, $class2))
+        );
+    }
+
+    /**
+     * @param $a
+     * @return bool|string
+     */
+    public function getAssociationClassMock($a)
+    {
+        switch ($a) {
+            case 'a':
+            case 'b':
+                return 'AB';
+            break;
+            case 'c':
+            case 'd':
+                return 'CD';
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * @param $a
+     * @return array|bool
+     */
+    public function getAssociationMappingMock($a)
+    {
+        switch ($a) {
+            case 'a':
+                $return = array(
+                    'isOwningSide' => true,
+                    'mappedBy'      => null,
+                    'inversedBy'    => 'c'
+                );
+                break;
+            case 'b':
+                $return = array(
+                    'isOwningSide' => true,
+                    'mappedBy'      => null,
+                    'inversedBy'    => 'd'
+                );
+                break;
+            case 'c':
+                $return = array(
+                    'isOwningSide' => false,
+                    'mappedBy'      => 'a',
+                    'inversedBy'    => null
+                );
+                break;
+            case 'd':
+                $return = array(
+                    'isOwningSide' => false,
+                    'mappedBy'      => 'b',
+                    'inversedBy'    => null
+                );
+                break;
+            default:
+                $return = false;
+        }
+        return $return;
     }
 }
