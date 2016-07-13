@@ -116,8 +116,8 @@ class YUMLMetadataGrapher
         $class2Count    = 0;
         $bidirectional  = false;
 
-        if (null !== $class2SideName){
-            if ($isInverse){
+        if (null !== $class2SideName) {
+            if ($isInverse) {
                 $class2Count    = $class2->isCollectionValuedAssociation($class2SideName) ? 2 : 1;
                 $bidirectional  = true;
             } elseif ($class2->isAssociationInverseSide($class2SideName)) {
@@ -207,7 +207,8 @@ class YUMLMetadataGrapher
      */
     private function getClassByName($className)
     {
-        return isset($this->metadata[$className]) && !empty($this->metadata[$className])? $this->metadata[$className]: null;
+        return isset($this->metadata[$className]) && !empty($this->metadata[$className])?
+            $this->metadata[$className]: null;
     }
 
     /**
@@ -216,7 +217,8 @@ class YUMLMetadataGrapher
      *
      * @param ClassMetadata[] $metadata
      */
-    private function storeClasses($metadata){
+    private function storeClasses($metadata)
+    {
         foreach ($metadata as $class) {
             $this->metadata[$class->getName()] = $class;
         }
