@@ -31,9 +31,9 @@
         "squizlabs/php_codesniffer":          "~2"
     },
     "suggest":              {
-        "onurb/doctrine-yuml-bundle": "bundle to use this library in symfony - not compatible with odm yet"
+        "onurb/doctrine-yuml-bundle": "Symfony bundle to generate Entities mapping"
     },
     "autoload":             {
-        "psr-4":    { "Doctrine\\ORM\\MetadataGrapher\\":"lib/Doctrine/ORM/MetadataGrapher/" }
+        "psr-4":    { "Onurb\\Doctrine\\ORMMetadataGrapher\\":"lib/Onurb/Doctrine/ORMMetadataGrapher/" }
     }
 }

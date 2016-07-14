@@ -17,7 +17,7 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Doctrine\ORM\MetadataGrapher;
+namespace Onurb\Doctrine\ORMMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 

@@ -17,10 +17,10 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace DoctrineTest\ORM\MetadataGrapher;
+namespace OnurbTest\Doctrine\ORMMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher;
+use Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -29,11 +29,12 @@ use PHPUnit_Framework_TestCase;
  * @license MIT
  * @link    http://www.doctrine-project.org/
  * @author  Marco Pivetta <ocramius@gmail.com>
+ * @author  Bruno Heron <herobrun@gmail.com>
  */
 class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @var YUMLMetadataGrapher
      */
     protected $grapher;
 
@@ -48,7 +49,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawSimpleEntity()
     {
@@ -61,7 +62,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawSimpleEntityWithFields()
     {
@@ -81,7 +82,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawOneToOneUniDirectionalAssociation()
     {
@@ -128,7 +129,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawOneToOneBiDirectionalAssociation()
     {
@@ -202,7 +203,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawOneToOneBiDirectionalInverseAssociation()
     {
@@ -276,7 +277,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawOneToManyBiDirectionalAssociation()
     {
@@ -349,7 +350,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawOneToManyBiDirectionalInverseAssociation()
     {
@@ -422,7 +423,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawManyToManyUniDirectionalAssociation()
     {
@@ -468,7 +469,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawManyToManyUniDirectionalInverseAssociation()
     {
@@ -514,7 +515,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawManyToManyBiDirectionalAssociation()
     {
@@ -587,7 +588,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawManyToManyBiDirectionalInverseAssociation()
     {
@@ -660,7 +661,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawManyToManyAssociationWithoutKnownInverseSide()
     {
@@ -701,7 +702,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawInheritance()
     {
@@ -722,7 +723,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawInheritedFields()
     {
@@ -745,7 +746,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      */
     public function testDrawInheritedAssociations()
     {
@@ -795,7 +796,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      * @dataProvider injectMultipleRelationsWithBothBiAndMonoDirectional
      * @param ClassMetadata $class1
      * @param ClassMetadata $class2
@@ -1029,10 +1030,13 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Doctrine\ORM\MetadataGrapher\YUMLMetadataGrapher
+     * @covers YUMLMetadataGrapher
      * @dataProvider injectTwoClassesWithTwoDifferentRelationsOneToManyBidirectionnal
+     * @param ClassMetadata $class1
+     * @param ClassMetadata $class2
      */
-    public function testMultipleRelationsManyToOneBeetweenTwoSameClasses($class1, $class2, $expected)
+    public function testMultipleRelationsManyToOneBeetweenTwoSameClasses(
+        ClassMetadata $class1, ClassMetadata $class2, $expected)
     {
         $this->assertSame(
             $expected,

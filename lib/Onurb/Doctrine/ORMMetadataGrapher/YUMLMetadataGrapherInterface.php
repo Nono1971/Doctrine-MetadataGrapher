@@ -17,12 +17,12 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Doctrine\ORM\MetadataGrapher;
+namespace Onurb\Doctrine\ORMMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
- * Utility to generate yUML compatible strings from metadata graphs
+ * Interface of utility to generate yUML compatible strings from metadata graphs
  *
  * @license MIT
  * @link    http://www.doctrine-project.org/
