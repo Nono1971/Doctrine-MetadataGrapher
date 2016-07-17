@@ -1036,8 +1036,10 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
      * @param ClassMetadata $class2
      */
     public function testMultipleRelationsManyToOneBeetweenTwoSameClasses(
-        ClassMetadata $class1, ClassMetadata $class2, $expected)
-    {
+        ClassMetadata $class1,
+        ClassMetadata $class2,
+        $expected
+    ) {
         $this->assertSame(
             $expected,
             $this->grapher->generateFromMetadata(array($class1, $class2))
