@@ -7,9 +7,13 @@
         convertWarningsToExceptions="true"
         verbose="true"
         stopOnFailure="false"
-        syntaxCheck="true"
-        >
+        syntaxCheck="true" >
     <testsuite name="MetadataGrapher tests">
-        <directory>./tests/</directory>
+        <directory suffix="Test.php">./tests/</directory>
     </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./lib</directory>
+        </whitelist>
+    </filter>
 </phpunit>

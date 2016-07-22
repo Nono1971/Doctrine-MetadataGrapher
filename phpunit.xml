@@ -9,7 +9,7 @@
     stopOnFailure="false"
     syntaxCheck="true" >
     <testsuite name="MetadataGrapher tests">
-        <directory>./tests/</directory>
+        <directory suffix="Test.php">./tests/</directory>
     </testsuite>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
