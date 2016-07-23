@@ -46,6 +46,12 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->grapher = new YUMLMetadataGrapher();
+
+        require_once('YumlMetadataGrapher/ClassStoreTest/A.php');
+        require_once('YumlMetadataGrapher/ClassStoreTest/B.php');
+        require_once('YumlMetadataGrapher/ClassStoreTest/C.php');
+        require_once('YumlMetadataGrapher/ClassStoreTest/D.php');
+        require_once('YumlMetadataGrapher/ClassStoreTest/E.php');
     }
 
     /**
@@ -725,6 +731,52 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
      */
+    public function testDrawInheritanceWithParentsTree()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\E'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('a', 'b', 'c', 'd', 'e', 'f', 'g')));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'a';
+                }
+            )
+        );
+
+        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent->expects($this->any())->method('getName')->will($this->returnValue(
+            'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
+        ));
+        $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('d')));
+        $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
+
+        $classOlderParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classOlderParent->expects($this->any())->method('getName')->will($this->returnValue(
+            'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
+        ));
+        $classOlderParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('b','c')));
+        $classOlderParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $classOlderParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.ClassStoreTest.D|d]'
+            . '^[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.ClassStoreTest.E|+a;e;f;g]'
+            . ',[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.ClassStoreTest.A|b;c]^'
+            . '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.ClassStoreTest.D|d]',
+            $this->grapher->generateFromMetadata(array($class1, $classParent, $classOlderParent))
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
     public function testDrawInheritedFields()
     {
         $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
@@ -798,6 +850,7 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
      * @dataProvider injectMultipleRelationsWithBothBiAndMonoDirectional
+     *
      * @param ClassMetadata $class1
      * @param ClassMetadata $class2
      * @param ClassMetadata $class3

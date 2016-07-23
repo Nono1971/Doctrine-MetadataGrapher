@@ -3,6 +3,8 @@
 namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\StringGeneratorHelper;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\StringGeneratorHelperInterface;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\VisitedAssociationLogger;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\VisitedAssociationLoggerInterface;
 
@@ -13,6 +15,11 @@ class StringGenerator implements StringGeneratorInterface
      * @var array
      */
     protected $classStrings;
+
+    /**
+     * @var StringGeneratorHelperInterface
+     */
+    protected $stringHelper;
 
 
     /**
@@ -32,6 +39,7 @@ class StringGenerator implements StringGeneratorInterface
     {
         $this->classStore = $classStore;
         $this->associationLogger = new VisitedAssociationLogger();
+        $this->stringHelper = new StringGeneratorHelper();
     }
 
     /**
@@ -51,37 +59,40 @@ class StringGenerator implements StringGeneratorInterface
      */
     public function getClassString(ClassMetadata $class)
     {
-        $className    = $class->getName();
+        $className = $class->getName();
+
         if (!isset($this->classStrings[$className])) {
             $this->associationLogger->visitAssociation($className);
 
-            $classText    = '[' . str_replace('\\', '.', $className);
-            $fields       = array();
-            $parent       = $this->classStore->getParent($class);
-            $parentFields = $parent ? $parent->getFieldNames() : array();
+            $parentFields = $this->getParentFields($class);
+            $fields       = $this->getClassFields($class, $parentFields);
 
-            foreach ($class->getFieldNames() as $fieldName) {
-                if (in_array($fieldName, $parentFields)) {
-                    continue;
-                }
-
-                if ($class->isIdentifier($fieldName)) {
-                    $fields[] = '+' . $fieldName;
-                } else {
-                    $fields[] = $fieldName;
-                }
-            }
-
-            if (!empty($fields)) {
-                $classText .= '|' . implode(';', $fields);
-            }
-
-            $classText .= ']';
-
-            $this->classStrings[$className] = $classText;
+            $this->classStrings[$className] = $this->stringHelper->getClassText($className, $fields);
         }
 
         return $this->classStrings[$className];
+    }
+
+    /**
+     * Recursive function to get all fields in inheritance
+     *
+     * @param ClassMetadata $class
+     * @param array $fields
+     * @return array
+     */
+    public function getParentFields(ClassMetadata $class, $fields = array())
+    {
+        if ($parent = $this->classStore->getParent($class)) {
+            $parentFields = $parent->getFieldNames();
+            foreach ($parentFields as $field) {
+                if (!in_array($field, $fields)) {
+                    $fields[] = $field;
+                }
+            }
+            $fields = $this->getParentFields($parent, $fields);
+        }
+
+        return $fields;
     }
 
     /**
@@ -91,45 +102,93 @@ class StringGenerator implements StringGeneratorInterface
      */
     public function getAssociationString(ClassMetadata $class1, $association)
     {
-        $targetClassName = $class1->getAssociationTargetClass($association);
-        $class2          = $this->classStore->getClassByName($targetClassName);
-        $isInverse       = $class1->isAssociationInverseSide($association);
-        $class1Count     = $class1->isCollectionValuedAssociation($association) ? 2 : 1;
+        $targetClassName  = $class1->getAssociationTargetClass($association);
+        $class2           = $this->classStore->getClassByName($targetClassName);
+        $isInverse        = $class1->isAssociationInverseSide($association);
+        $associationCount = $this->getClassCount($class1, $association);
 
         if (null === $class2) {
-            return $this->makeSingleSidedLinkString($class1, $isInverse, $association, $class1Count, $targetClassName);
+            return $this->stringHelper->makeSingleSidedLinkString(
+                $this->getClassString($class1),
+                $isInverse,
+                $association,
+                $associationCount,
+                $targetClassName
+            );
         }
 
-        $class1SideName = $association;
-        $class2SideName = $this->getClassReverseAssociationName($class1, $association);
-        $class2Count    = 0;
-        $bidirectional  = false;
+        $reverseAssociationName = $this->getClassReverseAssociationName($class1, $association);
 
-        if (null !== $class2SideName) {
-            if ($isInverse) {
-                $class2Count    = $class2->isCollectionValuedAssociation($class2SideName) ? 2 : 1;
-                $bidirectional  = true;
-            } elseif ($class2->isAssociationInverseSide($class2SideName)) {
-                $class2Count    = $class2->isCollectionValuedAssociation($class2SideName) ? 2 : 1;
-                $bidirectional  = true;
-            }
+        $reverseAssociationCount = 0;
+        $bidirectional = $this->isBidirectional(
+            $reverseAssociationName,
+            $isInverse,
+            $class2
+        );
+
+        if ($bidirectional) {
+            $reverseAssociationCount = $this->getClassCount($class2, $reverseAssociationName);
+            $bidirectional = true;
         }
 
-        $this->associationLogger->visitAssociation($targetClassName, $class2SideName);
+        $this->associationLogger->visitAssociation($targetClassName, $reverseAssociationName);
 
-        return $this->makeDoubleSidedLinkString(
-            $class1,
-            $class2,
+        return $this->stringHelper->makeDoubleSidedLinkString(
+            $this->getClassString($class1),
+            $this->getClassString($class2),
             $bidirectional,
             $isInverse,
-            $class2SideName,
-            $class2Count,
-            $class1SideName,
-            $class1Count
+            $reverseAssociationName,
+            $reverseAssociationCount,
+            $association,
+            $associationCount
         );
     }
 
+    /**
+     * @param boolean $isInverse
+     * @param string|null $reverseAssociationName
+     * @param ClassMetadata $class2
+     * @return bool
+     */
+    private function isBidirectional(
+        $reverseAssociationName,
+        $isInverse,
+        ClassMetadata $class2
+    ) {
+        return null !== $reverseAssociationName
+        && ($isInverse || $class2->isAssociationInverseSide($reverseAssociationName));
+    }
 
+    /**
+     * @param ClassMetadata $class
+     * @param string $association
+     * @return int
+     */
+    private function getClassCount(ClassMetadata $class, $association)
+    {
+        return $class->isCollectionValuedAssociation($association) ? 2 : 1;
+    }
+    
+    /**
+     * @param ClassMetadata $class
+     * @param array $parentFields
+     * @return array
+     */
+    private function getClassFields(ClassMetadata $class, $parentFields)
+    {
+        $fields = array();
+
+        foreach ($class->getFieldNames() as $fieldName) {
+            if (in_array($fieldName, $parentFields)) {
+                continue;
+            }
+
+            $fields[] = $class->isIdentifier($fieldName) ? '+' . $fieldName : $fieldName;
+        }
+
+        return $fields;
+    }
 
     /**
      * Returns the $class2 association name for $class1 if reverse related (or null if not)
@@ -146,53 +205,5 @@ class StringGenerator implements StringGeneratorInterface
         }
 
         return $class1->getAssociationMapping($association)['mappedBy'];
-    }
-
-    /**
-     * @param ClassMetadata $class1
-     * @param boolean $isInverse
-     * @param string $association
-     * @param int $class1Count
-     * @param string $targetClassName
-     * @return string
-     */
-    private function makeSingleSidedLinkString(
-        ClassMetadata $class1,
-        $isInverse,
-        $association,
-        $class1Count,
-        $targetClassName
-    ) {
-        return $this->getClassString($class1) . ($isInverse ? '<' : '<>') . '-' . $association . ' '
-        . ($class1Count > 1 ? '*' : ($class1Count ? '1' : '')) . ($isInverse ? '<>' : '>')
-        . '[' . str_replace('\\', '.', $targetClassName) . ']';
-    }
-
-    /**
-     * @param ClassMetadata $class1
-     * @param ClassMetadata $class2
-     * @param boolean $bidirectional
-     * @param boolean $isInverse
-     * @param string $class2SideName
-     * @param integer $class2Count
-     * @param string $class1SideName
-     * @param integer $class1Count
-     *
-     * @return string
-     */
-    private function makeDoubleSidedLinkString(
-        ClassMetadata $class1,
-        ClassMetadata $class2,
-        $bidirectional,
-        $isInverse,
-        $class2SideName,
-        $class2Count,
-        $class1SideName,
-        $class1Count
-    ) {
-        return $this->getClassString($class1) . ($bidirectional ? ($isInverse ? '<' : '<>') : '')
-        . ($class2SideName ? $class2SideName . ' ' : '') . ($class2Count > 1 ? '*' : ($class2Count ? '1' : ''))
-        . '-' . $class1SideName . ' ' . ($class1Count > 1 ? '*' : ($class1Count ? '1' : ''))
-        . (($bidirectional && $isInverse) ? '<>' : '>') . $this->getClassString($class2);
     }
 }

@@ -18,7 +18,7 @@
  */
 namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreTest;
 
-class E
+class E extends D
 {
 
 }

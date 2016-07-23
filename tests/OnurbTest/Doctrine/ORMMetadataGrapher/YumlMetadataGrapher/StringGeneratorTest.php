@@ -39,6 +39,17 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     protected $stringGenerator;
 
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
     public function testInstance()
     {
         $classStore = $this->getMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
@@ -50,6 +61,9 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
     public function testGetAssociationLogger()
     {
         $classStore = $this->getMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
@@ -62,45 +76,10 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testGetClassStringClass()
-    {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class1->expects($this->any())->method('getName')->will($this->returnValue('Extended\\Entity'));
-        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
-        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
-        $class1->expects($this->any())->method('isIdentifier')->will(
-            $this->returnCallback(
-                function ($field) {
-                    return $field === 'a';
-                }
-            )
-        );
-
-        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $classParent->expects($this->any())->method('getName')->will($this->returnValue('Parent\\Entity'));
-        $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('b')));
-        $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
-        $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
-
-        $classStore =
-            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
-                ->getMock();
-
-        $classStore->expects($this->any())->method('getParent')
-            ->with($this->logicalOr($class1, $classParent))
-            ->will($this->returnCallback(
-                function ($class) use ($class1, $classParent) {
-                    return $class == $class1 ? $classParent : null;
-                }
-            ));
-
-
-        $stringGenerator = new StringGenerator($classStore);
-
-        $this->assertSame('[Extended.Entity|+a;c]', $stringGenerator->getClassString($class1));
-    }
-
-    public function testGetClassStringWithParentFieldMatching()
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testGetClassString()
     {
         $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
@@ -112,6 +91,125 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
                     return $field === 'a';
                 }
             )
+        );
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')
+            ->will($this->returnValue(null));
+        
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame('[Simple.Entity|+a;b;c]', $stringGenerator->getClassString($class1));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testGetClassStringWithParentFieldMatching()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Extended\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('a', 'b', 'c', 'd', 'e', 'f', 'g')));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'a';
+                }
+            )
+        );
+
+        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent->expects($this->any())->method('getName')->will($this->returnValue('Parent\\Entity'));
+        $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('d')));
+        $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')
+            ->with($this->logicalOr($class1, $classParent))
+            ->will($this->returnCallback(
+                function ($class) use ($class1, $classParent) {
+                    if ($class == $class1) {
+                        return $classParent;
+                    }
+                    return null;
+                }
+            ));
+
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame('[Extended.Entity|+a;b;c;e;f;g]', $stringGenerator->getClassString($class1));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testClassStringWithOlderParentFieldsMatching()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\E'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('a', 'b', 'c', 'd', 'e', 'f', 'g')));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'a';
+                }
+            )
+        );
+
+        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent->expects($this->any())->method('getName')->will($this->returnValue(
+            'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\D'
+        ));
+        $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('d')));
+        $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
+
+        $classOlderParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classOlderParent->expects($this->any())->method('getName')->will($this->returnValue(
+            'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\A'
+        ));
+        $classOlderParent->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('b', 'c')));
+        $classOlderParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $classOlderParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')
+            ->with($this->logicalOr($class1, $classParent, $classOlderParent))
+            ->will($this->returnCallback(
+                function ($class) use ($class1, $classParent, $classOlderParent) {
+                    if ($class == $class1) {
+                        return $classParent;
+                    } elseif ($class == $classParent) {
+                        return $classOlderParent;
+                    }
+                    return null;
+                }
+            ));
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YUMLMetadataGrapher.ClassStoreTest.E|+a;e;f;g]',
+            $stringGenerator->getClassString($class1)
         );
     }
 
@@ -311,6 +409,9 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertSame('[C]<>-d *>[D]', $stringGenerator->getAssociationString($class2, 'd'));
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
     public function testGetAssociationMappingWithBidirectionnalOneToOneRelation()
     {
         $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
@@ -394,6 +495,9 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertSame('[B]<b 1-a 1<>[A]', $stringGenerator->getAssociationString($class2, 'a'));
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
     public function testGetAssociationMappingWithBidirectionnalManyToOneRelation()
     {
         $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
@@ -477,6 +581,9 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertSame('[B]<b *-a 1<>[A]', $stringGenerator->getAssociationString($class2, 'a'));
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
     public function testGetAssociationMappingWithBidirectionnalManyToManyRelation()
     {
         $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')

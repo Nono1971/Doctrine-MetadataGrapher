@@ -1,4 +1,4 @@
-# Metagatagrapher for Yuml data preparation v 1.0
+# Metagatagrapher for Yuml data preparation v 1.1
 
 [![Build Status](https://travis-ci.org/Nono1971/Doctrine-MetadataGrapher.svg?branch=master)](https://travis-ci.org/Nono1971/Doctrine-MetadataGrapher) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Nono1971/Doctrine-MetadataGrapher/build-status/master) [![Latest Stable Version](https://poser.pugx.org/onurb/doctrine-metadata-grapher/v/stable)](https://packagist.org/packages/onurb/doctrine-metadata-grapher) [![Total Downloads](https://poser.pugx.org/onurb/doctrine-metadata-grapher/downloads)](https://packagist.org/packages/onurb/doctrine-metadata-grapher) 
 
@@ -14,7 +14,7 @@ to generate visual objects mapping graphs
         // ...
         require: {
             // ...
-            "onurb/doctrine-metadata-grapher": "~1.0"
+            "onurb/doctrine-metadata-grapher": "~1.1"
         }
     }
 ```

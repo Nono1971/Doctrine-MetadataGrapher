@@ -44,8 +44,12 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
     protected $stringGenerator;
 
     /**
-     * Generate a yUML compatible `dsl_text` to describe a given array
-     * of entities
+     * @var array
+     */
+    protected $str = array();
+
+    /**
+     * Generate a yUML compatible `dsl_text` to describe a given array of entities
      *
      * @param  $metadata ClassMetadata[]
      *
@@ -56,40 +60,90 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
         $this->classStore = new ClassStore($metadata);
         $this->stringGenerator = new StringGenerator($this->classStore);
 
-//        $this->storeClasses($metadata);
-        $str                       = array();
-
         foreach ($metadata as $class) {
-            if ($parent = $this->classStore->getParent($class)) {
-                $str[] = $this->stringGenerator->getClassString($parent) . '^'
-                    . $this->stringGenerator->getClassString($class);
-            }
+            $this->writeParentAssociation($class);
 
             $associations = $class->getAssociationNames();
 
-            if (empty($associations)
-                && !isset(
-                    $this->stringGenerator->getAssociationLogger()
-                    ->getVisitedAssociations()[$class->getName()]
-                )
-            ) {
-                $str[] = $this->stringGenerator->getClassString($class);
+            if (empty($associations)) {
+                $this->writeSingleClass($class);
+            } else {
+                $this->writeClassAssociations($class, $associations);
+            }
+        }
 
+        return implode(',', $this->str);
+    }
+
+    /**
+     * @param ClassMetadata $class
+     */
+    private function writeParentAssociation(ClassMetadata $class)
+    {
+        if ($parent = $this->classStore->getParent($class)) {
+            $this->str[] = $this->stringGenerator->getClassString($parent) . '^'
+                . $this->stringGenerator->getClassString($class);
+        }
+    }
+
+    /**
+     * @param ClassMetadata $class
+     */
+    private function writeSingleClass(ClassMetadata $class)
+    {
+        if (!$this->stringGenerator->getAssociationLogger()->isVisitedAssociation($class->getName())) {
+            $this->str[] = $this->stringGenerator->getClassString($class);
+        }
+    }
+
+    /**
+     * @param ClassMetadata $class
+     * @param array $associations
+     */
+    private function writeClassAssociations(ClassMetadata $class, $associations)
+    {
+        $inheritanceAssociations = $this->getInheritanceAssociations($class);
+
+        foreach ($associations as $associationName) {
+            if (in_array($associationName, $inheritanceAssociations)) {
                 continue;
             }
 
-            foreach ($associations as $associationName) {
-                if ($parent && in_array($associationName, $parent->getAssociationNames())) {
-                    continue;
-                }
+            $this->writeAssociation($class, $associationName);
+        }
+    }
 
-                if ($this->stringGenerator->getAssociationLogger()
-                    ->visitAssociation($class->getName(), $associationName)
-                ) {
-                    $str[] = $this->stringGenerator->getAssociationString($class, $associationName);
+    /**
+     * @param ClassMetadata $class
+     * @param string $association
+     */
+    private function writeAssociation(ClassMetadata $class, $association)
+    {
+        if ($this->stringGenerator->getAssociationLogger()
+            ->visitAssociation($class->getName(), $association)
+        ) {
+            $this->str[] = $this->stringGenerator->getAssociationString($class, $association);
+        }
+    }
+
+    /**
+     * Recursive function to get all associations in inheritance
+     *
+     * @param ClassMetadata $class
+     * @param array $associations
+     * @return array
+     */
+    private function getInheritanceAssociations(ClassMetadata $class, $associations = array())
+    {
+        if ($parent = $this->classStore->getParent($class)) {
+            foreach ($parent->getAssociationNames() as $association) {
+                if (!in_array($association, $associations)) {
+                    $associations[] = $association;
                 }
             }
+            $associations = $this->getInheritanceAssociations($parent, $associations);
         }
-        return implode(',', $str);
+
+        return $associations;
     }
 }

@@ -77,26 +77,39 @@ class ClassStoreTest extends PHPUnit_Framework_TestCase
         ));
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
     public function testInstance()
     {
         $this->assertInstanceOf(
-            'Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStore',
+            'Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface',
             $this->classStore
         );
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
     public function testGetParent()
     {
         $this->assertNull($this->classStore->getParent($this->class1));
         $this->assertNull($this->classStore->getParent($this->class2));
         $this->assertNull($this->classStore->getParent($this->class3));
+
         $this->assertInstanceOf(
             'Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata',
             $this->classStore->getParent($this->class4)
         );
-        $this->assertNull($this->classStore->getParent($this->class5));
+        $this->assertInstanceOf(
+            'Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata',
+            $this->classStore->getParent($this->class5)
+        );
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
     public function testGetClassByNameWithGoodValue()
     {
         $this->assertSame(
@@ -131,6 +144,9 @@ class ClassStoreTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
     public function testGetClassByNameWithWrongValue()
     {
         $this->assertNull($this->classStore->getClassByName('MaSuperClassePasCree'));

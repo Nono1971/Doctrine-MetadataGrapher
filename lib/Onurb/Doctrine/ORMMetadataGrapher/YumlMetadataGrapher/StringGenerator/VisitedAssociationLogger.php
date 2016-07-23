@@ -12,14 +12,6 @@ class VisitedAssociationLogger implements VisitedAssociationLoggerInterface
     protected $visitedAssociations = array();
 
     /**
-     * @return array
-     */
-    public function getVisitedAssociations()
-    {
-        return $this->visitedAssociations;
-    }
-
-    /**
      * Visit a given association and mark it as visited
      *
      * @param string      $className
@@ -41,11 +33,10 @@ class VisitedAssociationLogger implements VisitedAssociationLoggerInterface
      * @param string|null $association
      * @return bool
      */
-    protected function isVisitedAssociation($className, $association = null)
+    public function isVisitedAssociation($className, $association = null)
     {
         return null === $association ?
-            isset($this->visitedAssociations[$className]) :
-            isset($this->visitedAssociations[$className][$association]);
+            isset($this->visitedAssociations[$className]) : isset($this->visitedAssociations[$className][$association]);
     }
 
     /**

@@ -38,12 +38,18 @@ class VisitedAssociationLoggerTest extends PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * {@inheritDoc}
+     */
     public function setUp()
     {
         parent::setUp();
         $this->logger = new VisitedAssociationLogger();
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator\VisitedAssociationLogger
+     */
     public function testInstance()
     {
         $this->assertInstanceOf(
@@ -53,12 +59,9 @@ class VisitedAssociationLoggerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testGetVisitedAssociationsIsArray()
-    {
-        $this->assertSame(array(), $this->logger->getVisitedAssociations());
-    }
-
-
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator\VisitedAssociationLogger
+     */
     public function testVisitAssociation()
     {
         $this->assertTrue($this->logger->visitAssociation('A'));
@@ -71,22 +74,12 @@ class VisitedAssociationLoggerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->logger->visitAssociation('D', 'b'));
         $this->assertFalse($this->logger->visitAssociation('C', 'b'));
 
-        $this->assertSame(
-            array(
-                'A' => array(),
-                'B' => array(
-                    'a' => true,
-                    'c' => true,
-                    'd' => true
-                ),
-                'C' => array(
-                    'b' => true
-                ),
-                'D' => array(
-                    'b' => true
-                )
-            ),
-            $this->logger->getVisitedAssociations()
-        );
+        $this->assertTrue($this->logger->isVisitedAssociation('A'));
+        $this->assertTrue($this->logger->isVisitedAssociation('B'));
+        $this->assertTrue($this->logger->isVisitedAssociation('B', 'a'));
+        $this->assertTrue($this->logger->isVisitedAssociation('C'));
+        $this->assertTrue($this->logger->isVisitedAssociation('D'));
+        $this->assertFalse($this->logger->isVisitedAssociation('E'));
+        $this->assertFalse($this->logger->isVisitedAssociation('B', 'e'));
     }
 }

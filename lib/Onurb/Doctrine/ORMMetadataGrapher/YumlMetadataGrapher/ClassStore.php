@@ -81,7 +81,7 @@ class ClassStore implements ClassStoreInterface
      */
     public function getClassByName($className)
     {
-        return isset($this->metadata[$className]) && !empty($this->metadata[$className])?
-            $this->metadata[$className]: null;
+        return isset($this->metadata[$className]) && !empty($this->metadata[$className]) ?
+            $this->metadata[$className] : null;
     }
 }
