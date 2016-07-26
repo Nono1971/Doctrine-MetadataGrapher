@@ -3,6 +3,8 @@
 namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\FieldGeneratorHelper;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\StringGeneratorHelper;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\StringGeneratorHelperInterface;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\VisitedAssociationLogger;
@@ -14,23 +16,25 @@ class StringGenerator implements StringGeneratorInterface
     /**
      * @var array
      */
-    protected $classStrings;
+    private $classStrings;
 
     /**
      * @var StringGeneratorHelperInterface
      */
-    protected $stringHelper;
+    private $stringHelper;
 
 
     /**
      * @var ClassStoreInterface
      */
-    protected $classStore;
+    private $classStore;
 
     /**
      * @var VisitedAssociationLoggerInterface
      */
-    protected $associationLogger;
+    private $associationLogger;
+
+    private $annotationParser;
 
     /**
      * @param ClassStoreInterface $classStore
@@ -40,6 +44,7 @@ class StringGenerator implements StringGeneratorInterface
         $this->classStore = $classStore;
         $this->associationLogger = new VisitedAssociationLogger();
         $this->stringHelper = new StringGeneratorHelper();
+        $this->annotationParser = new AnnotationParser();
     }
 
     /**
@@ -54,10 +59,10 @@ class StringGenerator implements StringGeneratorInterface
      * Build the string representing the single graph item
      *
      * @param ClassMetadata $class
-     *
+     * @param bool $showFieldsDescription
      * @return string
      */
-    public function getClassString(ClassMetadata $class)
+    public function getClassString(ClassMetadata $class, $showFieldsDescription = false)
     {
         $className = $class->getName();
 
@@ -65,9 +70,12 @@ class StringGenerator implements StringGeneratorInterface
             $this->associationLogger->visitAssociation($className);
 
             $parentFields = $this->getParentFields($class);
-            $fields       = $this->getClassFields($class, $parentFields);
+            $fields       = $this->getClassFields($class, $parentFields, $showFieldsDescription);
 
-            $this->classStrings[$className] = $this->stringHelper->getClassText($className, $fields);
+
+            $methods = $this->annotationParser->getClassMethodsAnnotations($className);
+
+            $this->classStrings[$className] = $this->stringHelper->getClassText($className, $fields, $methods);
         }
 
         return $this->classStrings[$className];
@@ -80,15 +88,17 @@ class StringGenerator implements StringGeneratorInterface
      * @param array $fields
      * @return array
      */
-    public function getParentFields(ClassMetadata $class, $fields = array())
+    private function getParentFields(ClassMetadata $class, $fields = array())
     {
         if ($parent = $this->classStore->getParent($class)) {
             $parentFields = $parent->getFieldNames();
+
             foreach ($parentFields as $field) {
                 if (!in_array($field, $fields)) {
                     $fields[] = $field;
                 }
             }
+
             $fields = $this->getParentFields($parent, $fields);
         }
 
@@ -145,6 +155,9 @@ class StringGenerator implements StringGeneratorInterface
         );
     }
 
+
+
+
     /**
      * @param boolean $isInverse
      * @param string|null $reverseAssociationName
@@ -169,13 +182,14 @@ class StringGenerator implements StringGeneratorInterface
     {
         return $class->isCollectionValuedAssociation($association) ? 2 : 1;
     }
-    
+
     /**
      * @param ClassMetadata $class
      * @param array $parentFields
+     * @param bool $DisplayAttributesDetails
      * @return array
      */
-    private function getClassFields(ClassMetadata $class, $parentFields)
+    private function getClassFields(ClassMetadata $class, $parentFields, $DisplayAttributesDetails = false)
     {
         $fields = array();
 
@@ -183,8 +197,13 @@ class StringGenerator implements StringGeneratorInterface
             if (in_array($fieldName, $parentFields)) {
                 continue;
             }
+            $DisplayAttributesDetails = $this->checkDisplayAnnotations($class->getName(), $DisplayAttributesDetails);
 
-            $fields[] = $class->isIdentifier($fieldName) ? '+' . $fieldName : $fieldName;
+            //$showTypes = $this->getClassAttrPropsDisplay($class->getName(), $showTypes);
+
+            $fields[] = $class->isIdentifier($fieldName) ?
+                '+' . $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails) :
+                $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails);
         }
 
         return $fields;
@@ -200,10 +219,40 @@ class StringGenerator implements StringGeneratorInterface
      */
     private function getClassReverseAssociationName(ClassMetadata $class1, $association)
     {
+        /**
+         * @var ClassMetadataInfo $class1
+         */
         if ($class1->getAssociationMapping($association)['isOwningSide']) {
             return $class1->getAssociationMapping($association)['inversedBy'];
         }
 
         return $class1->getAssociationMapping($association)['mappedBy'];
+    }
+
+    private function makeFieldName(ClassMetadata $class, $fieldName, $showTypes)
+    {
+        if ($showTypes) {
+            $helper = new FieldGeneratorHelper();
+            return $helper->getFullField($class, $fieldName);
+        }
+
+        return $fieldName;
+    }
+
+    /**
+     * @param string $className
+     * @param boolean $DisplayAttributesDetails
+     * @return bool
+     */
+    private function checkDisplayAnnotations($className, $DisplayAttributesDetails)
+    {
+        $showParams = $this->annotationParser->getClassDisplay($className);
+        if ($DisplayAttributesDetails && $showParams == 'hide') {
+            return false;
+        } elseif (!$DisplayAttributesDetails && $showParams == 'show') {
+            return true;
+        }
+
+        return $DisplayAttributesDetails;
     }
 }

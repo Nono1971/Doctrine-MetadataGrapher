@@ -34,13 +34,11 @@ class ClassStore implements ClassStoreInterface
 {
 
     /**
-     * indexed array of ClassMetadata
+     * Indexed array of ClassMetadata and options
      *
-     * @var ClassMetadata[]
+     * @var array
      */
-    protected $metadata = array();
-
-    protected $visitedAssociations;
+    private $indexedClasses = array();
 
     /**
      * store metadata in an associated array to get classes
@@ -50,9 +48,28 @@ class ClassStore implements ClassStoreInterface
      */
     public function __construct($metadata)
     {
-        foreach ($metadata as $class) {
-            $this->metadata[$class->getName()] = $class;
-        }
+        $this->indexClasses($metadata);
+    }
+
+    /**
+     * Retrieve a class metadata instance by name from the given array
+     *
+     * @param   string      $className
+     *
+     * @return  ClassMetadata|null
+     */
+    public function getClassByName($className)
+    {
+        $classMap = $this->getClassMap($this->splitClassName($className)) . "[\"__class\"]";
+        $return = null;
+
+        eval(
+            "if (isset(\$this->indexedClasses$classMap)) {"
+            . " \$return = \$this->indexedClasses$classMap;"
+            . "}"
+        );
+
+        return $return;
     }
 
     /**
@@ -73,15 +90,117 @@ class ClassStore implements ClassStoreInterface
     }
 
     /**
-     * Retrieve a class metadata instance by name from the given array
-     *
-     * @param   string      $className
-     *
-     * @return  ClassMetadata|null
+     * @return array
      */
-    public function getClassByName($className)
+    public function getIndexedClasses()
     {
-        return isset($this->metadata[$className]) && !empty($this->metadata[$className]) ?
-            $this->metadata[$className] : null;
+        return $this->indexedClasses;
+    }
+
+    /**
+     * @param string $className
+     * @return string
+     */
+    public function getClassColor($className)
+    {
+        $splitName = $this->splitClassName($className);
+        $color = null;
+
+        do {
+            $colorMap = $this->getClassMap($splitName) . "[\"__color\"]";
+
+            eval(
+                "if (isset(\$this->indexedClasses$colorMap)) {"
+                . "\$color = \$this->indexedClasses$colorMap;"
+                . "}"
+            );
+
+            unset($splitName[count($splitName) - 1]);
+        } while (null === $color && !empty($splitName));
+
+        return $color;
+    }
+
+    /**
+     * @param array $colors
+     */
+    public function storeColors($colors)
+    {
+        foreach ($colors as $namespace => $color) {
+            $this->storeColor($namespace, $color);
+        }
+    }
+
+    /**
+     * @param array $classSplit
+     * @return string
+     */
+    private function getClassMap($classSplit)
+    {
+        return "[\"" . implode("\"][\"", $classSplit) . "\"]";
+    }
+
+    /**
+     * @param ClassMetadata[] $metadata
+     */
+    private function indexClasses($metadata)
+    {
+        foreach ($metadata as $class) {
+            $this->indexClass($class);
+        }
+    }
+
+    /**
+     * @param ClassMetadata $class
+     */
+    private function indexClass(ClassMetadata $class)
+    {
+        $this->checkIndexAlreadyExists($class->getName());
+
+        $classMap = $this->getClassMap($this->splitClassName($class->getName())) . "[\"__class\"]";
+
+        eval(
+            "\$this->indexedClasses$classMap = \$class;"
+        );
+    }
+
+    /**
+     * @param string $className
+     * @return array
+     */
+    private function splitClassName($className)
+    {
+        return explode('\\', $className);
+    }
+
+    /**
+     * @param string $className
+     */
+    private function checkIndexAlreadyExists($className)
+    {
+        $namespaces = $this->splitClassName($className);
+
+        $tmpArrayMap = "";
+
+        foreach ($namespaces as $namespace) {
+            $tmpArrayMap .= "[\"$namespace\"]";
+            eval("if (!isset(\$this->indexedClasses$tmpArrayMap)) "
+            . "{\$this->indexedClasses$tmpArrayMap = array(\"__class\" => null, \"__color\" => null);}");
+        }
+    }
+
+    /**
+     * @param string $namespace
+     * @param string $color
+     */
+    private function storeColor($namespace, $color)
+    {
+        $this->checkIndexAlreadyExists($namespace);
+
+        $colorMap = $this->getClassMap($this->splitClassName($namespace)) . "[\"__color\"]";
+
+        eval(
+            "\$this->indexedClasses$colorMap = \"$color\";"
+        );
     }
 }

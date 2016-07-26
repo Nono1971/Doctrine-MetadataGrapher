@@ -7,9 +7,10 @@ interface StringGeneratorHelperInterface
     /**
      * @param string $className
      * @param array $fields
+     * @param array $methods
      * @return string
      */
-    public function getClassText($className, $fields);
+    public function getClassText($className, $fields, $methods = array());
 
 
     /**

@@ -20,7 +20,10 @@
 namespace Onurb\Doctrine\ORMMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStore;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ColorManager;
+use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\NotesManager;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator;
 
 /**
@@ -36,43 +39,89 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
     /**
      * @var ClassStore
      */
-    protected $classStore;
+    private $classStore;
 
     /**
      * @var StringGenerator
      */
-    protected $stringGenerator;
+    private $stringGenerator;
 
     /**
      * @var array
      */
-    protected $str = array();
+    private $str = array();
+
+    /**
+     * @var ColorManager
+     */
+    private $colorManager;
+
+    /**
+     * @var AnnotationParser
+     */
+    private $annotationParser;
+
+
+    public function __construct()
+    {
+        $this->annotationParser = new AnnotationParser();
+    }
+
 
     /**
      * Generate a yUML compatible `dsl_text` to describe a given array of entities
      *
-     * @param  $metadata ClassMetadata[]
-     *
+     * @param ClassMetadata[] $metadata
+     * @param boolean $showFieldsDescription
+     * @param array $colors
+     * @param array $notes
      * @return string
      */
-    public function generateFromMetadata(array $metadata)
-    {
+    public function generateFromMetadata(
+        array $metadata,
+        $showFieldsDescription = false,
+        $colors = array(),
+        $notes = array()
+    ) {
         $this->classStore = new ClassStore($metadata);
         $this->stringGenerator = new StringGenerator($this->classStore);
+        $this->colorManager = new ColorManager($this->stringGenerator, $this->classStore);
+
+        $annotations = $this->annotationParser->getAnnotations($metadata);
+
+        $colors = array_merge($colors, $annotations['colors']);
+        $notes = array_merge($notes, $annotations['notes']);
 
         foreach ($metadata as $class) {
             $this->writeParentAssociation($class);
-
-            $associations = $class->getAssociationNames();
-
-            if (empty($associations)) {
-                $this->writeSingleClass($class);
-            } else {
-                $this->writeClassAssociations($class, $associations);
-            }
+            $this->dispatchStringWriter($class, $class->getAssociationNames());
         }
 
+        $this->addColors($metadata, $colors);
+        $this->addNotes($notes);
+
         return implode(',', $this->str);
+    }
+
+    private function addColors($metadata, $colors)
+    {
+        if (!empty($colors)) {
+            $return = $this->colorManager->getColorStrings($metadata, $colors);
+            $this->str = array_merge($this->str, $return);
+        }
+    }
+
+    /**
+     * @param ClassMetadata $class
+     * @param $associations
+     */
+    private function dispatchStringWriter(ClassMetadata $class, $associations)
+    {
+        if (empty($associations)) {
+            $this->writeSingleClass($class);
+        } else {
+            $this->writeClassAssociations($class, $associations);
+        }
     }
 
     /**
@@ -145,5 +194,16 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
         }
 
         return $associations;
+    }
+
+    /**
+     * @param array $notes
+     */
+    private function addNotes($notes)
+    {
+        if (!empty($notes)) {
+            $notesManager = new NotesManager($this->classStore, $this->stringGenerator);
+            $this->str = array_merge($this->str, $notesManager->getNotesStrings($notes));
+        }
     }
 }

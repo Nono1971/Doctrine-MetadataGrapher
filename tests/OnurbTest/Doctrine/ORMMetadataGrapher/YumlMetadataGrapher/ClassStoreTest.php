@@ -149,6 +149,153 @@ class ClassStoreTest extends PHPUnit_Framework_TestCase
      */
     public function testGetClassByNameWithWrongValue()
     {
-        $this->assertNull($this->classStore->getClassByName('MaSuperClassePasCree'));
+        $this->assertNull($this->classStore->getClassByName('MyGreatUnknownClass'));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
+    public function testGetIndexedClasses()
+    {
+
+        $expected = array(
+            "OnurbTest" => array(
+                "__class" => null,
+                "__color" => null,
+                "Doctrine" => array(
+                    "__class" => null,
+                    "__color" => null,
+                    "ORMMetadataGrapher" => array(
+                        "__class" => null,
+                        "__color" => null,
+                        "YumlMetadataGrapher" => array(
+                            "__class" => null,
+                            "__color" => null,
+                            "ClassStoreTest" => array(
+                                "__class" => null,
+                                "__color" => null,
+                                "A" => array(
+                                    "__class" => $this->class1,
+                                    "__color" => null,
+                                ),
+                                "C" => array(
+                                    "__class" => $this->class3,
+                                    "__color" => null,
+                                ),
+                                "E" => array(
+                                    "__class" => $this->class5,
+                                    "__color" => null,
+                                ),
+                                "D" => array(
+                                    "__class" => $this->class4,
+                                    "__color" => null,
+                                ),
+                                "B" => array(
+                                    "__class" => $this->class2,
+                                    "__color" => null,
+                                ),
+
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        $this->assertSame($expected, $this->classStore->getIndexedClasses());
+
+        $expected["OnurbTest"]["Doctrine"]["ORMMetadataGrapher"]
+            ["YumlMetadataGrapher"]["__color"] = "violet";
+
+        $expected["OnurbTest"]["Doctrine"]["ORMMetadataGrapher"]
+            ["YumlMetadataGrapher"]["ClassStoreTest"]["A"]["__color"] = "skyblue";
+
+        $expected["OnurbTest"]["Doctrine"]["ORMMetadataGrapher"]
+            ["YumlMetadataGrapher"]["ClassStoreTest"]["B"]["__color"] = "blue";
+
+        $expected["OnurbTest"]["Doctrine"]["ORMMetadataGrapher"]
+            ["YumlMetadataGrapher"]["ClassStoreTest"]["C"]["__color"] = "yellow";
+
+
+
+        $this->classStore->storeColors(array(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A" => "skyblue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B" => "blue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C" => "yellow",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher" => "violet",
+        ));
+
+        $this->assertSame($expected, $this->classStore->getIndexedClasses());
+    }
+
+    public function testGetClassColor()
+    {
+        $this->classStore->storeColors(array(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A" => "skyblue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B" => "blue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C" => "yellow",
+        ));
+
+        $this->assertSame('skyblue', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A"
+        ));
+
+        $this->assertSame('blue', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B"
+        ));
+
+        $this->assertSame('yellow', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C"
+        ));
+
+        $this->assertNull($this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D"
+        ));
+
+        $this->assertNull($this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\E"
+        ));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\ClassStore
+     */
+    public function testGetClassColorWithNamespaceColor()
+    {
+        $this->classStore->storeColors(array(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A" => "skyblue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B" => "blue",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C" => "yellow",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher" => "yellowgreen",
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher" => "purple",
+        ));
+
+        $this->assertSame('skyblue', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A"
+        ));
+
+        $this->assertSame('blue', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B"
+        ));
+
+        $this->assertSame('yellow', $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C"
+        ));
+
+        $this->assertSame("yellowgreen", $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D"
+        ));
+
+        $this->assertSame("yellowgreen", $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\E"
+        ));
+
+        $this->assertSame("purple", $this->classStore->getClassColor(
+            "OnurbTest\\Doctrine\\ORMMetadataGrapher"
+        ));
+
+        $this->assertNull($this->classStore->getClassColor(
+            "OnurbTest\\Doctrine"
+        ));
     }
 }

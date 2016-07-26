@@ -9,7 +9,7 @@ class VisitedAssociationLogger implements VisitedAssociationLoggerInterface
      *
      * @var array
      */
-    protected $visitedAssociations = array();
+    private $visitedAssociations = array();
 
     /**
      * Visit a given association and mark it as visited

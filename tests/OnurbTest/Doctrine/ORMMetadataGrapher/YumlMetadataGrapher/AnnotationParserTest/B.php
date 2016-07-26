@@ -16,29 +16,38 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
+namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest;
 
-namespace Onurb\Doctrine\ORMMetadataGrapher;
-
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping as ORM;
+use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
 
 /**
- * Interface of utility to generate yUML compatible strings from metadata graphs
+ * Class B
+ * @package OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest
  *
- * @license MIT
- * @link    http://www.doctrine-project.org/
- * @author  Marco Pivetta   <ocramius@gmail.com>
- * @author  Bruno Heron     <<herobrun@gmail.com>
+ * @ORM\Entity
+ * @Grapher\Color(value="blue")
  */
-interface YUMLMetadataGrapherInterface
+class B
 {
     /**
-     * Generate a yUML compatible `dsl_text` to describe a given array of entities
-     *
-     * @param  $metadata ClassMetadata[]
-     * @param boolean $displayTypes
-     * @param array $colors
-     * @param array $notes
-     * @return string
+     * @Grapher\IsDisplayedMethod
      */
-    public function generateFromMetadata(array $metadata, $displayTypes, $colors = array(), $notes = array());
+    public function methodAnnotated()
+    {
+        return;
+    }
+
+    /**
+     * @Grapher\IsDisplayedMethod
+     */
+    public function otherMethodAnnotated()
+    {
+        return;
+    }
+
+    public function normalMethod()
+    {
+        return;
+    }
 }

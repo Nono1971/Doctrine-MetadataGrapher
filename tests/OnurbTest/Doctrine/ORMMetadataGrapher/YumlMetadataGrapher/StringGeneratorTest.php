@@ -33,20 +33,6 @@ use PHPUnit_Framework_TestCase;
  */
 class StringGeneratorTest extends PHPUnit_Framework_TestCase
 {
-
-    /**
-     * @var StringGenerator
-     */
-    protected $stringGenerator;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
      */
@@ -665,5 +651,298 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('[A]<>a *-b *>[B]', $stringGenerator->getAssociationString($class1, 'b'));
         $this->assertSame('[B]<b *-a *<>[A]', $stringGenerator->getAssociationString($class2, 'a'));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testGetClassStringWithFullAttributes()
+    {
+        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+            ->setMethods(array(
+                'getName',
+                'getIdentifier',
+                'getReflectionClass',
+                'isIdentifier',
+                'hasField',
+                'hasAssociation',
+                'isSingleValuedAssociation',
+                'isCollectionValuedAssociation',
+                'getFieldNames',
+                'getIdentifierFieldNames',
+                'getAssociationNames',
+                'getTypeOfField',
+                'getAssociationTargetClass',
+                'isAssociationInverseSide',
+                'getAssociationMappedByTargetField',
+                'getIdentifierValues',
+                'getFieldMapping',
+            ))->getMock();
+
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('id','name','description')));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'id';
+                }
+            )
+        );
+
+        $class1->expects($this->any())->method('getFieldMapping')->will(
+            $this->returnCallback(
+                function ($field) {
+                    if ($field === 'id') {
+                        return array(
+                            'type' => 'integer'
+                        );
+                    } elseif ($field === 'name') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 45,
+                            'unique' => true
+
+                        );
+                    } elseif ($field === 'description') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 255
+                        );
+                    }
+                }
+            )
+        );
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')
+            ->will($this->returnValue(null));
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame(
+            '[Simple.Entity|+id : integer;¤ name : string (45);description : string (255)]',
+            $stringGenerator->getClassString($class1, true)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testGetClassStringWithDecimalFullAttributes()
+    {
+        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+            ->setMethods(array(
+                'getName',
+                'getIdentifier',
+                'getReflectionClass',
+                'isIdentifier',
+                'hasField',
+                'hasAssociation',
+                'isSingleValuedAssociation',
+                'isCollectionValuedAssociation',
+                'getFieldNames',
+                'getIdentifierFieldNames',
+                'getAssociationNames',
+                'getTypeOfField',
+                'getAssociationTargetClass',
+                'isAssociationInverseSide',
+                'getAssociationMappedByTargetField',
+                'getIdentifierValues',
+                'getFieldMapping',
+            ))->getMock();
+
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getFieldNames')
+            ->will($this->returnValue(array('id','price','otherPrice')));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'id';
+                }
+            )
+        );
+
+        $class1->expects($this->any())->method('getFieldMapping')->will(
+            $this->returnCallback(
+                function ($field) {
+                    if ($field === 'id') {
+                        return array(
+                            'type' => 'integer'
+                        );
+                    } elseif ($field === 'price') {
+                        return array(
+                            'type' => 'decimal',
+
+                        );
+                    } elseif ($field === 'otherPrice') {
+                        return array(
+                            'type' => 'decimal',
+                            'precision' => 10,
+                            'scale' => 3
+                        );
+                    }
+                }
+            )
+        );
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')
+            ->will($this->returnValue(null));
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame(
+            '[Simple.Entity|+id : integer;price : decimal;otherPrice : decimal (10 - 3)]',
+            $stringGenerator->getClassString($class1, true)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testClassStringWithShowFieldsBloquedByAnnotation()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\G'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'a';
+                }
+            )
+        );
+
+        $class1->expects($this->any())->method('getFieldMapping')->will(
+            $this->returnCallback(
+                function ($field) {
+                    if ($field === 'a') {
+                        return array(
+                            'type' => 'integer'
+                        );
+                    } elseif ($field === 'b') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 45,
+                            'unique' => true
+
+                        );
+                    } elseif ($field === 'c') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 255
+                        );
+                    }
+                    return false;
+                }
+            )
+        );
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')->will($this->returnValue(null));
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.G|+a;b;c]',
+            $stringGenerator->getClassString($class1, true)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
+     */
+    public function testClassStringWithShowFieldsForcedByAnnotation()
+    {
+        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+            ->setMethods(array(
+                'getName',
+                'getIdentifier',
+                'getReflectionClass',
+                'isIdentifier',
+                'hasField',
+                'hasAssociation',
+                'isSingleValuedAssociation',
+                'isCollectionValuedAssociation',
+                'getFieldNames',
+                'getIdentifierFieldNames',
+                'getAssociationNames',
+                'getTypeOfField',
+                'getAssociationTargetClass',
+                'isAssociationInverseSide',
+                'getAssociationMappedByTargetField',
+                'getIdentifierValues',
+                'getAssociationMapping',
+                'getFieldMapping',
+            ))->getMock();
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\H'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('isIdentifier')->will(
+            $this->returnCallback(
+                function ($field) {
+                    return $field === 'a';
+                }
+            )
+        );
+
+        $class1->expects($this->any())->method('getFieldMapping')->will(
+            $this->returnCallback(
+                function ($field) {
+                    if ($field === 'a') {
+                        return array(
+                            'type' => 'integer'
+                        );
+                    } elseif ($field === 'b') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 45,
+                            'unique' => true
+
+                        );
+                    } elseif ($field === 'c') {
+                        return array(
+                            'type' => 'string',
+                            'length' => 255
+                        );
+                    }
+                    return false;
+                }
+            )
+        );
+
+        $classStore =
+            $this->getMockBuilder('Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreInterface')
+                ->getMock();
+
+        $classStore->expects($this->any())->method('getParent')->will($this->returnValue(null));
+
+        $stringGenerator = new StringGenerator($classStore);
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.H|'
+                . '+a : integer;¤ b : string (45);c : string (255)]',
+            $stringGenerator->getClassString($class1),
+            false
+        );
     }
 }

@@ -2,19 +2,19 @@
 
 namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator;
 
-use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGeneratorInterface;
-
 class StringGeneratorHelper implements StringGeneratorHelperInterface
 {
     /**
      * @param string $className
      * @param array $fields
+     * @param array $methods
      * @return string
      */
-    public function getClassText($className, $fields)
+    public function getClassText($className, $fields, $methods = array())
     {
         $classText = '[' . str_replace('\\', '.', $className);
         $classText .= !empty($fields) ? '|' . implode(';', $fields) : '';
+        $classText .= !empty($methods) ? '|' . implode('();', $methods) . '()' : '';
         $classText .= ']';
 
         return $classText;
@@ -92,6 +92,7 @@ class StringGeneratorHelper implements StringGeneratorHelperInterface
     /**
      * @param int $classCount
      * @return string
+     * @throws \Exception
      */
     private function getCountSide($classCount)
     {

@@ -16,55 +16,27 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-
 namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
-/**
- * Utility to generate yUML compatible strings from metadata graphs
- *
- * @license MIT
- * @link    http://www.doctrine-project.org/
- * @author  Marco Pivetta   <ocramius@gmail.com>
- * @author  Bruno Heron     <<herobrun@gmail.com>
- */
-interface ClassStoreInterface
+interface AnnotationParserInterface
 {
-
     /**
-     * Retrieve a class metadata's parent class metadata
-     *
-     * @param ClassMetadata   $class
-     *
-     * @return ClassMetadata|null
-     */
-    public function getParent(ClassMetadata $class);
-
-    /**
-     * Retrieve a class metadata instance by name from the given array
-     *
-     * @param   string      $className
-     *
-     * @return  ClassMetadata|null
-     */
-    public function getClassByName($className);
-
-    /**
-     * @param array $colors
-     */
-    public function storeColors($colors);
-
-
-    /**
-     * @param string $getName
-     * @return string
-     */
-    public function getClassColor($getName);
-
-    /**
+     * @param ClassMetadata[] $metadata
      * @return array
      */
-    public function getIndexedClasses();
+    public function getAnnotations($metadata);
+
+    /**
+     * @param string $className
+     * @return array
+     */
+    public function getClassMethodsAnnotations($className);
+
+    /**
+     * @param string $className
+     * @return null|string
+     */
+    public function getClassDisplay($className);
 }

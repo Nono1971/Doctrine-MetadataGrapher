@@ -52,6 +52,12 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         require_once('YumlMetadataGrapher/ClassStoreTest/C.php');
         require_once('YumlMetadataGrapher/ClassStoreTest/D.php');
         require_once('YumlMetadataGrapher/ClassStoreTest/E.php');
+
+        require_once('YumlMetadataGrapher/AnnotationParserTest/A.php');
+        require_once('YumlMetadataGrapher/AnnotationParserTest/B.php');
+        require_once('YumlMetadataGrapher/AnnotationParserTest/C.php');
+        require_once('YumlMetadataGrapher/AnnotationParserTest/D.php');
+        require_once('YumlMetadataGrapher/AnnotationParserTest/E.php');
     }
 
     /**
@@ -713,17 +719,23 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     public function testDrawInheritance()
     {
         $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $child  = get_class($this->getMock('stdClass'));
-        $class1->expects($this->any())->method('getName')->will($this->returnValue('stdClass'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
-        $class2->expects($this->any())->method('getName')->will($this->returnValue($child));
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
+            ));
+
+        $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class2->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
+            ));
 
         $this->assertSame(
-            '[stdClass]^[' . str_replace('\\', '.', $child) . ']',
+            '[' . str_replace('\\', '.', $class1->getName()) . ']^[' . str_replace('\\', '.', $class2->getName()) . ']',
             $this->grapher->generateFromMetadata(array($class2, $class1))
         );
     }
@@ -781,18 +793,25 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
     {
         $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $child  = get_class($this->getMock('stdClass'));
 
-        $class1->expects($this->any())->method('getName')->will($this->returnValue('stdClass'));
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
+            ));
+
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('inherited')));
 
-        $class2->expects($this->any())->method('getName')->will($this->returnValue($child));
+        $class2->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
+            ));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('inherited', 'field2')));
 
         $this->assertSame(
-            '[stdClass|inherited]^[' . str_replace('\\', '.', $child) . '|field2]',
+            '['. str_replace('\\', '.', $class1->getName()) .'|inherited]^['
+                . str_replace('\\', '.', $class2->getName()) . '|field2]',
             $this->grapher->generateFromMetadata(array($class2, $class1))
         );
     }
@@ -806,9 +825,11 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class3 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class4 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $child  = get_class($this->getMock('stdClass'));
 
-        $class1->expects($this->any())->method('getName')->will($this->returnValue('stdClass'));
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
+            ));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a')));
         $class1->expects($this->any())->method('getAssociationTargetClass')->will($this->returnValue('A'));
 
@@ -816,7 +837,10 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2->expects($this->any())->method('getName')->will($this->returnValue($child));
+        $class2->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
+            ));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array('a', 'b')));
         $class2
             ->expects($this->any())
@@ -840,9 +864,12 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
         $class4->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class4->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $childName = str_replace('\\', '.', $child);
+        $childName = str_replace('\\', '.', $class2->getName());
+        $parentName = str_replace('\\', '.', $class1->getName());
+
         $this->assertSame(
-            '[stdClass]<>-a *>[A],[stdClass]^[' . $childName . '],[' . $childName . ']<>-b *>[B]',
+            '[' . $parentName . ']<>-a *>[A],'
+            . '['. $parentName .']^[' . $childName . '],[' . $childName . ']<>-b *>[B]',
             $this->grapher->generateFromMetadata(array($class1, $class2))
         );
     }
@@ -1157,5 +1184,179 @@ class YUMLMetadataGrapherTest extends PHPUnit_Framework_TestCase
                 $return = false;
         }
         return $return;
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithColorsAdded()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $colors = array(
+            'Simple\\Entity' => 'violet',
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity{bg:violet}]',
+            $this->grapher->generateFromMetadata(array($class1), false, $colors)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithColorsAddedOnParentNamespace()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $colors = array(
+            'Simple' => 'violet',
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity{bg:violet}]',
+            $this->grapher->generateFromMetadata(array($class1), false, $colors)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawColorPriority()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $colors = array(
+            'Simple' => 'violet',
+            'Simple\\Entity' => 'green'
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity{bg:green}]',
+            $this->grapher->generateFromMetadata(array($class1), false, $colors)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithNotesAdded()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $notes = array(
+            "Simple\\Entity" => array(
+                'value'   => 'description TEST',
+            )
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity]-[note:description TEST{bg:yellow}]',
+            $this->grapher->generateFromMetadata(array($class1), false, array(), $notes)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithColoredNotesAdded()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $notes = array(
+            "Simple\\Entity" => array(
+                'value'   => 'description TEST',
+                'color'         => 'blue'
+            )
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity]-[note:description TEST{bg:blue}]',
+            $this->grapher->generateFromMetadata(array($class1), false, array(), $notes)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithBothColorsAndColoredNotesAdded()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $colors = array(
+            "Simple\\Entity" => "green",
+        );
+
+        $notes = array(
+            "Simple\\Entity" => array(
+                'value'   => 'description TEST',
+                'color'         => 'blue'
+            )
+        );
+
+        $this->assertSame(
+            '[Simple.Entity],[Simple.Entity{bg:green}],[Simple.Entity]-[note:description TEST{bg:blue}]',
+            $this->grapher->generateFromMetadata(array($class1), false, $colors, $notes)
+        );
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher
+     */
+    public function testDrawWithAnnotationsColorsAndNotes()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\A'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.A],'
+                . '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.A{bg:blue}],'
+                . '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.A]-'
+                . '[note:My first annotation note{bg:yellowgreen}]',
+            $this->grapher->generateFromMetadata(array($class1))
+        );
+    }
+
+    public function testDrawWithMethods()
+    {
+        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\B'
+            ));
+        $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
+        $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
+
+        $this->assertSame(
+            '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.B|'
+                . 'methodAnnotated();otherMethodAnnotated()],'
+                . '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.B|'
+                . 'methodAnnotated();otherMethodAnnotated(){bg:blue}]',
+            $this->grapher->generateFromMetadata(array($class1))
+        );
     }
 }
