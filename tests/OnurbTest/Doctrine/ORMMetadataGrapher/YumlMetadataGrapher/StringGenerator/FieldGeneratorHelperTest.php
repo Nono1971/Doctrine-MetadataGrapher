@@ -97,9 +97,10 @@ class FieldGeneratorHelperTest extends PHPUnit_Framework_TestCase
                         return array(
                             'type' => 'string',
                             'unique' => true
-
                         );
                     }
+
+                    return false;
                 }
             )
         );
