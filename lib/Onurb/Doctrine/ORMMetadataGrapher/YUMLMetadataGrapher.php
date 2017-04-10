@@ -87,6 +87,8 @@ class YUMLMetadataGrapher implements YUMLMetadataGrapherInterface
         $this->stringGenerator = new StringGenerator($this->classStore);
         $this->colorManager = new ColorManager($this->stringGenerator, $this->classStore);
 
+        $this->stringGenerator->setShowFieldsDescription($showFieldsDescription);
+
         $annotations = $this->annotationParser->getAnnotations($metadata);
 
         $colors = array_merge($colors, $annotations['colors']);

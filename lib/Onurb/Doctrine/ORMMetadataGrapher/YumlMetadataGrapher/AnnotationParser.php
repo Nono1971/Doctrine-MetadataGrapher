@@ -131,22 +131,6 @@ class AnnotationParser implements AnnotationParserInterface
     }
 
     /**
-     * @return string
-     */
-    private function getORMAnnotationsPath()
-    {
-        $reflector = new ReflectionClass('Doctrine\\ORM\\Mapping\\Entity');
-        $entityFilename = $reflector->getFileName();
-        $entityPathArray = explode('\\', $entityFilename);
-
-        unset($entityPathArray[count($entityPathArray) - 1]);
-
-        return implode(DIRECTORY_SEPARATOR, $entityPathArray)
-            . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..'
-            . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
      * @param string $className
      * @return array
      */
@@ -200,37 +184,33 @@ class AnnotationParser implements AnnotationParserInterface
     {
         if ($hide && $show) {
             throw new \Exception('Annotations HideAttributesProperties and ShowAttributesProperties '
-            . 'can\'t be used together');
+            . 'can\'t be used on the same class at the same time');
         }
     }
 
     private function registerAnnotations()
     {
-        AnnotationRegistry::registerAutoloadNamespace(
-            "Doctrine\\ORM\\Mapping",
-            $this->getORMAnnotationsPath()
+
+
+        $baseDir = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR;
+
+        AnnotationRegistry::registerFile(
+            $baseDir . "Color.php"
+        );
+        AnnotationRegistry::registerFile(
+            $baseDir . "Note.php"
         );
 
         AnnotationRegistry::registerFile(
-            __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR . "Color.php"
-        );
-        AnnotationRegistry::registerFile(
-            __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR . "Note.php"
+            $baseDir . "IsDisplayedMethod.php"
         );
 
         AnnotationRegistry::registerFile(
-            __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR
-            . "IsDisplayedMethod.php"
+            $baseDir . "ShowAttributesProperties.php"
         );
 
         AnnotationRegistry::registerFile(
-            __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR
-            . "ShowAttributesProperties.php"
-        );
-
-        AnnotationRegistry::registerFile(
-            __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR
-            . "HideAttributesProperties.php"
+            $baseDir . "HideAttributesProperties.php"
         );
     }
 }

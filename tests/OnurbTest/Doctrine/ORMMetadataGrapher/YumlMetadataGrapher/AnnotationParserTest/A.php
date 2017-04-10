@@ -27,9 +27,6 @@ use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
  * Class A
  * @package OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest
  *
- *
- * @ORM\Entity
- *
  * @Grapher\Color("blue")
  * @Grapher\Note(value = "My first annotation note", color = "yellowgreen")
  */

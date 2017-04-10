@@ -34,7 +34,15 @@ class StringGenerator implements StringGeneratorInterface
      */
     private $associationLogger;
 
+    /**
+     * @var AnnotationParser
+     */
     private $annotationParser;
+
+    /**
+     * @var bool
+     */
+    private $showFieldsDescription = false;
 
     /**
      * @param ClassStoreInterface $classStore
@@ -45,6 +53,17 @@ class StringGenerator implements StringGeneratorInterface
         $this->associationLogger = new VisitedAssociationLogger();
         $this->stringHelper = new StringGeneratorHelper();
         $this->annotationParser = new AnnotationParser();
+    }
+
+    /**
+     * @param bool $showDescription
+     * @return $this
+     */
+    public function setShowFieldsDescription($showDescription)
+    {
+        $this->showFieldsDescription = $showDescription;
+
+        return $this;
     }
 
     /**
@@ -62,7 +81,7 @@ class StringGenerator implements StringGeneratorInterface
      * @param bool $showFieldsDescription
      * @return string
      */
-    public function getClassString(ClassMetadata $class, $showFieldsDescription = false)
+    public function getClassString(ClassMetadata $class)
     {
         $className = $class->getName();
 
@@ -70,7 +89,7 @@ class StringGenerator implements StringGeneratorInterface
             $this->associationLogger->visitAssociation($className);
 
             $parentFields = $this->getParentFields($class);
-            $fields       = $this->getClassFields($class, $parentFields, $showFieldsDescription);
+            $fields       = $this->getClassFields($class, $parentFields, $this->showFieldsDescription);
 
 
             $methods = $this->annotationParser->getClassMethodsAnnotations($className);

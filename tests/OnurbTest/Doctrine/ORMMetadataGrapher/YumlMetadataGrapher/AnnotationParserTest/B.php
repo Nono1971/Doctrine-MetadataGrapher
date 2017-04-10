@@ -25,7 +25,6 @@ use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
  * Class B
  * @package OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest
  *
- * @ORM\Entity
  * @Grapher\Color(value="blue")
  */
 class B

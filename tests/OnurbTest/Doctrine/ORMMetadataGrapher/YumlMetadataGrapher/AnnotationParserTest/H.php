@@ -26,7 +26,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @package OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest
  *
  * @Grapher\ShowAttributesProperties()
- * @ORM\Entity()
  */
 class H
 {

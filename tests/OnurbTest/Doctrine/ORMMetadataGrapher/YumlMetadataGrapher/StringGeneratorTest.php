@@ -726,7 +726,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             '[Simple.Entity|+id : integer;¤ name : string (45);description : string (255)]',
-            $stringGenerator->getClassString($class1, true)
+            $stringGenerator->setShowFieldsDescription(true)->getClassString($class1)
         );
     }
 
@@ -802,7 +802,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             '[Simple.Entity|+id : integer;price : decimal;otherPrice : decimal (10 - 3)]',
-            $stringGenerator->getClassString($class1, true)
+            $stringGenerator->setShowFieldsDescription(true)->getClassString($class1)
         );
     }
 
@@ -861,7 +861,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.G|+a;b;c]',
-            $stringGenerator->getClassString($class1, true)
+            $stringGenerator->setShowFieldsDescription(true)->getClassString($class1)
         );
     }
 

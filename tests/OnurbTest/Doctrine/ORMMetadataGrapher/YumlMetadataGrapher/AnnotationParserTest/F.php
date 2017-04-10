@@ -27,7 +27,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @Grapher\HideAttributesProperties()
  * @Grapher\ShowAttributesProperties()
- * @ORM\Entity()
  */
 class F
 {
