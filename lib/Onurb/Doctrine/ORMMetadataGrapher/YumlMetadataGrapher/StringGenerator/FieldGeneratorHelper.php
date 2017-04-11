@@ -66,6 +66,6 @@ class FieldGeneratorHelper implements FieldGeneratorHelperInterface
      */
     private function getUnique($fullField)
     {
-        return isset($fullField['unique']) ? '¤ ' : '';
+        return isset($fullField['unique']) && $fullField['unique'] ? '* ' : '';
     }
 }

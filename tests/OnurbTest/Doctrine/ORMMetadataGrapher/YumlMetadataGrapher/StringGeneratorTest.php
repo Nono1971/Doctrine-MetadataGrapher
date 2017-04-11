@@ -725,7 +725,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $stringGenerator = new StringGenerator($classStore);
 
         $this->assertSame(
-            '[Simple.Entity|+id : integer;¤ name : string (45);description : string (255)]',
+            '[Simple.Entity|+id : integer;* name : string (45);description : string (255)]',
             $stringGenerator->setShowFieldsDescription(true)->getClassString($class1)
         );
     }
@@ -940,7 +940,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             '[OnurbTest.Doctrine.ORMMetadataGrapher.YumlMetadataGrapher.AnnotationParserTest.H|'
-                . '+a : integer;¤ b : string (45);c : string (255)]',
+                . '+a : integer;* b : string (45);c : string (255)]',
             $stringGenerator->getClassString($class1),
             false
         );

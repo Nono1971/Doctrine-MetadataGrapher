@@ -111,7 +111,7 @@ class FieldGeneratorHelperTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(
-            '¤ b : string',
+            '* b : string',
             $this->fieldHelper->getFullField($class1, 'b')
         );
     }
