@@ -103,7 +103,7 @@ class AnnotationParser implements AnnotationParserInterface
     private function setClassColor($className)
     {
         $color = $this->annotationReader->getClassAnnotation(
-            new ReflectionClass(new $className),
+            new ReflectionClass($className),
             "Onurb\\Doctrine\\ORMMetadataGrapher\\Mapping\\Color"
         );
 
@@ -118,7 +118,7 @@ class AnnotationParser implements AnnotationParserInterface
     private function setClassNote($className)
     {
         $note = $this->annotationReader->getClassAnnotation(
-            new ReflectionClass(new $className),
+            new ReflectionClass($className),
             "Onurb\\Doctrine\\ORMMetadataGrapher\\Mapping\\Note"
         );
 
@@ -137,7 +137,7 @@ class AnnotationParser implements AnnotationParserInterface
     private function getMethods($className)
     {
         $methods = array();
-        $entityReflectionClass = new ReflectionClass(new $className);
+        $entityReflectionClass = new ReflectionClass($className);
 
         foreach ($entityReflectionClass->getMethods() as $method) {
             $methodAnnotation = $this->annotationReader->getMethodAnnotation(
