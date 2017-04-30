@@ -19,7 +19,6 @@
 namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest;
 
 use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class H

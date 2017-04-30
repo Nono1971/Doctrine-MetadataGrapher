@@ -18,7 +18,6 @@
  */
 namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest;
 
-use Doctrine\ORM\Mapping as ORM;
 use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
 
 /**

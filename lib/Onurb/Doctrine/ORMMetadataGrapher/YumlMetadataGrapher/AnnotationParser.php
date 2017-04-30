@@ -88,6 +88,62 @@ class AnnotationParser implements AnnotationParserInterface
 
     /**
      * @param string $className
+     * @return array
+     */
+    public function getHiddenAttributes($className)
+    {
+        $attributes = array();
+
+        if (class_exists($className)) {
+            return $this->getAttributes($className);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * @param string $className
+     * @return array
+     */
+    private function getAttributes($className)
+    {
+        $attributes = array();
+        $entityReflectionClass = new ReflectionClass($className);
+
+        foreach ($entityReflectionClass->getProperties() as $attr) {
+            $annotation = $this->annotationReader->getPropertyAnnotation(
+                $attr,
+                "Onurb\\Doctrine\\ORMMetadataGrapher\\Mapping\\HiddenColumn"
+            );
+
+            if (null !== $annotation) {
+                $attributes[] = $attr->getName();
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * @param string $className
+     * @return bool
+     */
+    public function getClassHidesAttributes($className)
+    {
+        $hide = null;
+
+        if (class_exists($className)) {
+            $hide = $this->annotationReader->getClassAnnotation(
+                new ReflectionClass($className),
+                "Onurb\\Doctrine\\ORMMetadataGrapher\\Mapping\\HideColumns"
+            );
+        }
+
+        return $hide === null ? false : true;
+    }
+
+    /**
+     * @param string $className
      */
     private function setClassAnnotations($className)
     {
@@ -190,8 +246,6 @@ class AnnotationParser implements AnnotationParserInterface
 
     private function registerAnnotations()
     {
-
-
         $baseDir = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Mapping" . DIRECTORY_SEPARATOR;
 
         AnnotationRegistry::registerFile(
@@ -211,6 +265,14 @@ class AnnotationParser implements AnnotationParserInterface
 
         AnnotationRegistry::registerFile(
             $baseDir . "HideAttributesProperties.php"
+        );
+
+        AnnotationRegistry::registerFile(
+            $baseDir . "HiddenColumn.php"
+        );
+
+        AnnotationRegistry::registerFile(
+            $baseDir . "HideColumns.php"
         );
     }
 }

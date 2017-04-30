@@ -100,6 +100,34 @@ MyEntity
 }
 ```
 
+The same way, you can hide Entity attributes with annotations : using the @grapher\HideColumns annotation on the class :
+
+```php
+/**
+* @Grapher\Hidecolumns
+*/
+MyEntity
+{
+    //[...]
+}
+```
+Or hide a specific secret column you want to hide, using the @Grapher\HiddenColumn on the Entity attribute :
+can be usefull to hide you credential logic, or to avoid recurrent fields, like created_at, or updated_at in the graph.
+
+```php
+/**
+* @Grapher\Hidecolumns
+*/
+MyEntity
+{
+    /**
+     * @ORM\Column(/* ... */)
+     * @Grapher\HiddenColumn
+     */
+    private $secret;
+}
+```
+
 ### Use colors
 you can use the yuml colors and apply it as you wish , on a class or on an entire namespace.
 color priority is given by hierarchy in the namespace...

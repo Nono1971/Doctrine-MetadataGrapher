@@ -212,17 +212,20 @@ class StringGenerator implements StringGeneratorInterface
     {
         $fields = array();
 
-        foreach ($class->getFieldNames() as $fieldName) {
-            if (in_array($fieldName, $parentFields)) {
-                continue;
+        if (!$this->annotationParser->getClassHidesAttributes($class->getName())) {
+            $hiddenFields = $this->annotationParser->getHiddenAttributes($class->getName());
+
+            foreach ($class->getFieldNames() as $fieldName) {
+                if (in_array($fieldName, $parentFields) || in_array($fieldName, $hiddenFields)) {
+                    continue;
+                }
+
+                $DisplayAttributesDetails = $this->checkDisplayAnnotations($class->getName(), $DisplayAttributesDetails);
+
+                $fields[] = $class->isIdentifier($fieldName) ?
+                    '+' . $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails) :
+                    $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails);
             }
-            $DisplayAttributesDetails = $this->checkDisplayAnnotations($class->getName(), $DisplayAttributesDetails);
-
-            //$showTypes = $this->getClassAttrPropsDisplay($class->getName(), $showTypes);
-
-            $fields[] = $class->isIdentifier($fieldName) ?
-                '+' . $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails) :
-                $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails);
         }
 
         return $fields;

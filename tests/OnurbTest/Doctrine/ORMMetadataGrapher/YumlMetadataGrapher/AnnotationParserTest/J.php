@@ -21,13 +21,11 @@ namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationPa
 use Onurb\Doctrine\ORMMetadataGrapher\Mapping as Grapher;
 
 /**
- * Class F
+ * Class H
  * @package OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParserTest
- *
- * @Grapher\HideAttributesProperties()
- * @Grapher\ShowAttributesProperties()
+ * @Grapher\HideColumns
  */
-class F
+class J
 {
 
 }

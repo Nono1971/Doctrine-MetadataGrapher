@@ -60,6 +60,16 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
      */
     private $class8;
 
+    /**
+     * @var ClassMetadata
+     */
+    private $class9;
+
+    /**
+     * @var ClassMetadata
+     */
+    private $class10;
+
     public function __construct()
     {
         parent::__construct();
@@ -72,6 +82,8 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
         require_once('AnnotationParserTest/F.php');
         require_once('AnnotationParserTest/G.php');
         require_once('AnnotationParserTest/H.php');
+        require_once('AnnotationParserTest/I.php');
+        require_once('AnnotationParserTest/J.php');
 
         $this->parser = new AnnotationParser();
 
@@ -121,6 +133,17 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
         $this->class8->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\H'
+            ));
+
+        $this->class9 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class9->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\I'
+            ));
+        $this->class10 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class10->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\J'
             ));
     }
 
@@ -259,12 +282,32 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser
+     */
+    public function testGetHiddenProperties()
+    {
+        $this->assertSame(
+            array(
+                'secret'
+            ),
+            $this->parser->getHiddenAttributes($this->class9->getName())
+        );
+    }
+
+    public function testHasPropertiesHidden()
+    {
+        $this->assertFalse($this->parser->getClassHidesAttributes($this->class9->getName()));
+        $this->assertTrue($this->parser->getClassHidesAttributes($this->class10->getName()));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser
      * @expectedException \Exception
      */
     public function testClassDisplayAnnotationsThrowsException()
     {
         $this->parser->getClassDisplay($this->classWithDisplayError->getName());
     }
+
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser
      */
@@ -275,6 +318,9 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->parser->getClassDisplay($this->class1->getName()));
     }
 
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser
+     */
     public function testGetClassDisplayReturnsNullIfClasssDoesntExist()
     {
         /**
@@ -286,5 +332,21 @@ class AnnotationParserTest extends PHPUnit_Framework_TestCase
                 'A'
             ));
         $this->assertNull($this->parser->getClassDisplay($class->getName()));
+    }
+
+    /**
+     * @covers \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser
+     */
+    public function testGetHiddenAttributeReturnsEmptyArrayIfClasssDoesntExist()
+    {
+        /**
+         * @var ClassMetadata $class
+         */
+        $class = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class->expects($this->any())->method('getName')
+            ->will($this->returnValue(
+                'A'
+            ));
+        $this->assertSame(array(), $this->parser->getHiddenAttributes($class->getName()));
     }
 }
