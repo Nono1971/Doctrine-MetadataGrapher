@@ -21,7 +21,7 @@ namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStore;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for the metadata to string converter
@@ -31,14 +31,14 @@ use PHPUnit_Framework_TestCase;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Bruno Heron <herobrun@gmail.com>
  */
-class StringGeneratorTest extends PHPUnit_Framework_TestCase
+class StringGeneratorTest extends TestCase
 {
     /**
      * @covers \Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher\StringGenerator
      */
     public function testInstance()
     {
-        $classStore = $this->getMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
+        $classStore = $this->createMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
         $stringGenerator = new StringGenerator($classStore);
 
         $this->assertInstanceOf(
@@ -52,7 +52,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAssociationLogger()
     {
-        $classStore = $this->getMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
+        $classStore = $this->createMock('Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStoreInterface');
         $stringGenerator = new StringGenerator($classStore);
 
         $this->assertInstanceOf(
@@ -67,7 +67,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGetClassString()
     {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -96,7 +96,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testGetClassStringWithParentFieldMatching()
     {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Extended\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')
             ->will($this->returnValue(array('a', 'b', 'c', 'd', 'e', 'f', 'g')));
@@ -109,7 +109,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $classParent->expects($this->any())->method('getName')->will($this->returnValue('Parent\\Entity'));
         $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('d')));
         $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -141,7 +141,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testClassStringWithOlderParentFieldsMatching()
     {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\E'
@@ -157,7 +157,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $classParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $classParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\D'
         ));
@@ -165,7 +165,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
 
-        $classOlderParent = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classOlderParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $classOlderParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\A'
         ));
@@ -238,7 +238,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -293,7 +293,7 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -811,7 +811,27 @@ class StringGeneratorTest extends PHPUnit_Framework_TestCase
      */
     public function testClassStringWithShowFieldsBloquedByAnnotation()
     {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+            ->setMethods(array(
+                'getName',
+                'getIdentifier',
+                'getReflectionClass',
+                'isIdentifier',
+                'hasField',
+                'hasAssociation',
+                'isSingleValuedAssociation',
+                'isCollectionValuedAssociation',
+                'getFieldNames',
+                'getIdentifierFieldNames',
+                'getAssociationNames',
+                'getTypeOfField',
+                'getAssociationTargetClass',
+                'isAssociationInverseSide',
+                'getAssociationMappedByTargetField',
+                'getIdentifierValues',
+                'getFieldMapping',
+            ))->getMock();
+
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\G'

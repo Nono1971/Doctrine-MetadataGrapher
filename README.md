@@ -28,13 +28,13 @@ adding a link into the dev toolbar.
 if you're Zend framework user, it is included into the DoctrineORMModule if you install zend-developer-tools
 
 
-Go to these github repos for concrete examples of use to retrieve the array of ClassMetadata
+Go to this github repo for concrete examples of use to retrieve the array of ClassMetadata
 - [here](https://github.com/Nono1971/doctrine-yuml-bundle)
-- or [here](https://github.com/doctrine/DoctrineORMModule)
 
+##Peronalize the display : Add notes, color your classes, hide or display fields description,
+hide specific or all entity column
 
-## -- NEW FEATURE -- Add notes, color your classes or display fields description
-Fully optional, you can now display fieldds description,
+Fully optional, you can display fieldds description,
 add color to your map or wwrite notes linked to a specific class.
 [![Colored Map with note](http://yuml.me/23e34ac0)](http://yuml.me/23e34ac0)
 
@@ -43,7 +43,6 @@ to hide or show attributes properties or display specific methods in the graph
 All of them are described below
 
 ## Options use
-
 
 ### Display fields description
 To display an Entity attributes properties, Use the @ShowAttributesProperties annotation on your entity : 
@@ -65,8 +64,6 @@ Class MyEntity
 
 It il also possible to show properties on all Entities and hide it only on less important Entities
 
-=> New optional arguments have been added the the main method generateFromMetadata():
-
 ```php
     /**
      * @param ClassMetadata[] $metadata
@@ -83,13 +80,14 @@ It il also possible to show properties on all Entities and hide it only on less 
     )
 ```
 
-To show fields descriptions just turn the $showField to true
+To show fields descriptions just turn the $showFieldsDescription to true
 ```php
     $metadataGrapher = new \Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher();
     $dsl_text = $metadataGrapher->generateFromMetadata($classMetadata, true);
 ```
 
 It is also possible to hide One Entity (or more) using the @HideAttributesProperties annotation
+(if $showFieldsDescription turned to true : no effect if false)
 ```php
 /**
 * @Grapher\HideAttributesProperties
@@ -100,7 +98,7 @@ MyEntity
 }
 ```
 
-The same way, you can hide Entity attributes with annotations : using the @grapher\HideColumns annotation on the class :
+Hide Entity columns with annotations : using the @grapher\HideColumns annotation on the class :
 
 ```php
 /**
@@ -115,9 +113,6 @@ Or hide a specific secret column you want to hide, using the @Grapher\HiddenColu
 can be usefull to hide you credential logic, or to avoid recurrent fields, like created_at, or updated_at in the graph.
 
 ```php
-/**
-* @Grapher\Hidecolumns
-*/
 MyEntity
 {
     /**
@@ -131,8 +126,6 @@ MyEntity
 ### Use colors
 you can use the yuml colors and apply it as you wish , on a class or on an entire namespace.
 color priority is given by hierarchy in the namespace...
-if Onurb\Doctrine is set to blue, and Onurb\Doctrine\ORMmetadataGrapher to green,
-all classes under this namespace will turn green, except a specific color given to a class.
 
 
 #### Colors usage
@@ -153,9 +146,6 @@ It is done using the third argument of generateMetadata() method to inject an as
 Color priority is given to Annotations, user can define a color for the namespace, and specifics colors
 for classes he want to highlight.
 It can be passed by parameters options depending of your framework logic to allow final users customization
-=> module_config.php for zend modules
-=> resources/config.* for Symfony bundles 
-=> ...
 
 ```php
     // [...]

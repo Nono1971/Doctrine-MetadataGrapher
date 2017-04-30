@@ -78,7 +78,6 @@ class StringGenerator implements StringGeneratorInterface
      * Build the string representing the single graph item
      *
      * @param ClassMetadata $class
-     * @param bool $showFieldsDescription
      * @return string
      */
     public function getClassString(ClassMetadata $class)
@@ -220,7 +219,10 @@ class StringGenerator implements StringGeneratorInterface
                     continue;
                 }
 
-                $DisplayAttributesDetails = $this->checkDisplayAnnotations($class->getName(), $DisplayAttributesDetails);
+                $DisplayAttributesDetails = $this->checkDisplayAnnotations(
+                    $class->getName(),
+                    $DisplayAttributesDetails
+                );
 
                 $fields[] = $class->isIdentifier($fieldName) ?
                     '+' . $this->makeFieldName($class, $fieldName, $DisplayAttributesDetails) :
@@ -251,6 +253,12 @@ class StringGenerator implements StringGeneratorInterface
         return $class1->getAssociationMapping($association)['mappedBy'];
     }
 
+    /**
+     * @param ClassMetadata $class
+     * @param string $fieldName
+     * @param boolean $showTypes
+     * @return string
+     */
     private function makeFieldName(ClassMetadata $class, $fieldName, $showTypes)
     {
         if ($showTypes) {

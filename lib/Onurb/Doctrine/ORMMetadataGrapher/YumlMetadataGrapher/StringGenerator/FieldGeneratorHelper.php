@@ -31,7 +31,7 @@ class FieldGeneratorHelper implements FieldGeneratorHelperInterface
      */
     private function getFieldLength($fullField)
     {
-        return $fullField['type'] === 'string' && isset($fullField['length']) ? ' (' . $fullField['length'] .')' : '';
+        return $fullField['type'] === 'string' && isset($fullField['length']) ? ' (' . $fullField['length'] . ')' : '';
     }
 
     /**
@@ -54,7 +54,7 @@ class FieldGeneratorHelper implements FieldGeneratorHelperInterface
     private function getDecimalPrecision($fullField)
     {
         if (isset($fullField['precision']) && isset($fullField['scale'])) {
-            return ' ('. $fullField['precision'] . ' - ' . $fullField['scale'] . ')';
+            return ' (' . $fullField['precision'] . ' - ' . $fullField['scale'] . ')';
         }
 
         return '';

@@ -34,5 +34,4 @@ class I
      * @Grapher\HiddenColumn
      */
     private $secret;
-
 }

@@ -20,7 +20,7 @@ namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ColorManager;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @license MIT
@@ -28,14 +28,14 @@ use PHPUnit_Framework_TestCase;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Bruno Heron <herobrun@gmail.com>
  */
-class ColorManagerTest extends PHPUnit_Framework_TestCase
+class ColorManagerTest extends TestCase
 {
     public function testDrawColors()
     {
-        $class1 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
 
-        $class2 = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('Other\\Entity'));
 
         $colors = array(
@@ -44,7 +44,7 @@ class ColorManagerTest extends PHPUnit_Framework_TestCase
         ) ;
 
 
-        $stringGenerator = $this->getMock(
+        $stringGenerator = $this->createMock(
             'Onurb\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\StringGeneratorInterface'
         );
 

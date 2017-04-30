@@ -20,7 +20,7 @@ namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenera
 
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\VisitedAssociationLogger;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\VisitedAssociationLoggerInterface;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for the metadata to string converter
@@ -30,7 +30,7 @@ use PHPUnit_Framework_TestCase;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Bruno Heron <herobrun@gmail.com>
  */
-class VisitedAssociationLoggerTest extends PHPUnit_Framework_TestCase
+class VisitedAssociationLoggerTest extends TestCase
 {
 
     /**
