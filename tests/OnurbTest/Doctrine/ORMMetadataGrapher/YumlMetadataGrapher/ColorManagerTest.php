@@ -18,7 +18,7 @@
  */
 namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ColorManager;
 use PHPUnit\Framework\TestCase;
 
@@ -32,10 +32,10 @@ class ColorManagerTest extends TestCase
 {
     public function testDrawColors()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('Other\\Entity'));
 
         $colors = array(

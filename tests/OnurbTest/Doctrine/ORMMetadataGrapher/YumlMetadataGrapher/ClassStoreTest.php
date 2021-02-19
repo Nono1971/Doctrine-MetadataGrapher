@@ -37,32 +37,32 @@ class ClassStoreTest extends TestCase
         require_once('ClassStoreTest/C.php');
         require_once('ClassStoreTest/D.php');
         require_once('ClassStoreTest/E.php');
-        
-        $this->class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+
+        $this->class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $this->class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
             ));
 
-        $this->class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $this->class2->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\B'
             ));
 
-        $this->class3 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class3 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $this->class3->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\C'
             ));
 
-        $this->class4 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class4 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $this->class4->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
             ));
 
-        $this->class5 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $this->class5 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $this->class5->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\E'
@@ -98,11 +98,11 @@ class ClassStoreTest extends TestCase
         $this->assertNull($this->classStore->getParent($this->class3));
 
         $this->assertInstanceOf(
-            'Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata',
+            'Doctrine\\Persistence\\Mapping\\ClassMetadata',
             $this->classStore->getParent($this->class4)
         );
         $this->assertInstanceOf(
-            'Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata',
+            'Doctrine\\Persistence\\Mapping\\ClassMetadata',
             $this->classStore->getParent($this->class5)
         );
     }

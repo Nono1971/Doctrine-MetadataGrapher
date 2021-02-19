@@ -64,7 +64,7 @@ class FieldGeneratorHelperTest extends TestCase
      */
     public function testUniqueField()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -121,7 +121,7 @@ class FieldGeneratorHelperTest extends TestCase
      */
     public function testStringField()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -180,7 +180,7 @@ class FieldGeneratorHelperTest extends TestCase
      */
     public function testDecimalField()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',

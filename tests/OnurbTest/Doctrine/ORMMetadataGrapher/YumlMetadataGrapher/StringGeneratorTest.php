@@ -18,7 +18,7 @@
  */
 namespace OnurbTest\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStore;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator;
 use PHPUnit\Framework\TestCase;
@@ -67,7 +67,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetClassString()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -85,7 +85,7 @@ class StringGeneratorTest extends TestCase
 
         $classStore->expects($this->any())->method('getParent')
             ->will($this->returnValue(null));
-        
+
         $stringGenerator = new StringGenerator($classStore);
 
         $this->assertSame('[Simple.Entity|+a;b;c]', $stringGenerator->getClassString($class1));
@@ -96,7 +96,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetClassStringWithParentFieldMatching()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Extended\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')
             ->will($this->returnValue(array('a', 'b', 'c', 'd', 'e', 'f', 'g')));
@@ -109,7 +109,7 @@ class StringGeneratorTest extends TestCase
             )
         );
 
-        $classParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $classParent->expects($this->any())->method('getName')->will($this->returnValue('Parent\\Entity'));
         $classParent->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('d')));
         $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -141,7 +141,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testClassStringWithOlderParentFieldsMatching()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\E'
@@ -157,7 +157,7 @@ class StringGeneratorTest extends TestCase
             )
         );
 
-        $classParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $classParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\D'
         ));
@@ -165,7 +165,7 @@ class StringGeneratorTest extends TestCase
         $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
 
-        $classOlderParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classOlderParent = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $classOlderParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YUMLMetadataGrapher\\ClassStoreTest\\A'
         ));
@@ -204,7 +204,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationString()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -238,7 +238,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -255,7 +255,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationStringWithUnknownTargetClass()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -293,7 +293,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -311,7 +311,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationStringWithUnknownTargetClassInverseSide()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -350,7 +350,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -400,7 +400,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationMappingWithBidirectionnalOneToOneRelation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -437,7 +437,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -486,7 +486,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationMappingWithBidirectionnalManyToOneRelation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -523,7 +523,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -572,7 +572,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetAssociationMappingWithBidirectionnalManyToManyRelation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -609,7 +609,7 @@ class StringGeneratorTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -658,7 +658,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetClassStringWithFullAttributes()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -735,7 +735,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testGetClassStringWithDecimalFullAttributes()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -811,7 +811,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testClassStringWithShowFieldsBloquedByAnnotation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -890,7 +890,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testClassStringWithShowFieldsForcedByAnnotation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -971,7 +971,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testClassStringWithFieldHiddenByAnnotation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -1052,7 +1052,7 @@ class StringGeneratorTest extends TestCase
      */
     public function testClassHideFieldsAnnotation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
