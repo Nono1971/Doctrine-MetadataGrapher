@@ -20,7 +20,7 @@ namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use ReflectionClass;
 
 class AnnotationParser implements AnnotationParserInterface

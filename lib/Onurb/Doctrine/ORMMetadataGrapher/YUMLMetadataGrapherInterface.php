@@ -19,7 +19,7 @@
 
 namespace Onurb\Doctrine\ORMMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 
 /**
  * Interface of utility to generate yUML compatible strings from metadata graphs

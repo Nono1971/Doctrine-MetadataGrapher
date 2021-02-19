@@ -19,7 +19,7 @@
 
 namespace OnurbTest\Doctrine\ORMMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YUMLMetadataGrapher;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +65,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawSimpleEntity()
     {
-        $class = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -78,7 +78,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawSimpleEntityWithFields()
     {
-        $class = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class->expects($this->any())->method('getFieldNames')->will($this->returnValue(array('a', 'b', 'c')));
         $class->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -98,7 +98,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawOneToOneUniDirectionalAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -132,7 +132,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -145,7 +145,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawOneToOneBiDirectionalAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -178,7 +178,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -219,7 +219,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawOneToOneBiDirectionalInverseAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -253,7 +253,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('a'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -293,7 +293,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawOneToManyBiDirectionalAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -325,7 +325,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -366,7 +366,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawOneToManyBiDirectionalInverseAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -398,7 +398,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -439,7 +439,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawManyToManyUniDirectionalAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -472,7 +472,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getName')->will($this->returnValue('B'));
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
@@ -485,12 +485,12 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawManyToManyUniDirectionalInverseAssociation()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('A'));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -531,7 +531,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawManyToManyBiDirectionalAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -563,7 +563,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -604,7 +604,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawManyToManyBiDirectionalInverseAssociation()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -637,7 +637,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('getAssociationMappedByTargetField')->will($this->returnValue('a'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -677,7 +677,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawManyToManyAssociationWithoutKnownInverseSide()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -718,7 +718,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawInheritance()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getName')
@@ -726,7 +726,7 @@ class YUMLMetadataGrapherTest extends TestCase
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
             ));
 
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class2->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class2->expects($this->any())->method('getName')
@@ -745,7 +745,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawInheritanceWithParentsTree()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\E'
@@ -761,7 +761,7 @@ class YUMLMetadataGrapherTest extends TestCase
             )
         );
 
-        $classParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classParent = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $classParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\D'
         ));
@@ -769,7 +769,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $classParent->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
         $classParent->expects($this->any())->method('isIdentifier')->will($this->returnValue(false));
 
-        $classOlderParent = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $classOlderParent = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $classOlderParent->expects($this->any())->method('getName')->will($this->returnValue(
             'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\ClassStoreTest\\A'
         ));
@@ -791,8 +791,8 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawInheritedFields()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
 
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
@@ -821,10 +821,10 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawInheritedAssociations()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class2 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class3 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $class4 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
+        $class2 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
+        $class3 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
+        $class4 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
 
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
@@ -903,7 +903,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function injectMultipleRelationsWithBothBiAndMonoDirectional()
     {
-        $class1 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class1 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -935,7 +935,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class1->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class2 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class2 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -967,7 +967,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $class2->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(false));
         $class2->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $class3 = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $class3 = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -1025,7 +1025,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function injectTwoClassesWithTwoDifferentRelationsOneToManyBidirectionnal()
     {
-        $classAB = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $classAB = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -1064,7 +1064,7 @@ class YUMLMetadataGrapherTest extends TestCase
         $classAB->expects($this->any())->method('isCollectionValuedAssociation')->will($this->returnValue(true));
         $classAB->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
 
-        $classCD = $this->getMockBuilder('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata')
+        $classCD = $this->getMockBuilder('Doctrine\\Persistence\\Mapping\\ClassMetadata')
             ->setMethods(array(
                 'getName',
                 'getIdentifier',
@@ -1191,7 +1191,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithColorsAdded()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1211,7 +1211,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithColorsAddedOnParentNamespace()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1231,7 +1231,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawColorPriority()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1252,7 +1252,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithNotesAdded()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1274,7 +1274,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithColoredNotesAdded()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1297,7 +1297,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithBothColorsAndColoredNotesAdded()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')->will($this->returnValue('Simple\\Entity'));
         $class1->expects($this->any())->method('getFieldNames')->will($this->returnValue(array()));
         $class1->expects($this->any())->method('getAssociationNames')->will($this->returnValue(array()));
@@ -1324,7 +1324,7 @@ class YUMLMetadataGrapherTest extends TestCase
      */
     public function testDrawWithAnnotationsColorsAndNotes()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\A'
@@ -1343,7 +1343,7 @@ class YUMLMetadataGrapherTest extends TestCase
 
     public function testDrawWithMethods()
     {
-        $class1 = $this->createMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $class1 = $this->createMock('Doctrine\\Persistence\\Mapping\\ClassMetadata');
         $class1->expects($this->any())->method('getName')
             ->will($this->returnValue(
                 'OnurbTest\\Doctrine\\ORMMetadataGrapher\\YumlMetadataGrapher\\AnnotationParserTest\\B'

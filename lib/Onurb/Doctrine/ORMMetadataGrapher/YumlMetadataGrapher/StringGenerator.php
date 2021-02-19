@@ -2,7 +2,7 @@
 
 namespace Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\FieldGeneratorHelper;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\StringGenerator\StringGeneratorHelper;

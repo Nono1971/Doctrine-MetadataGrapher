@@ -19,7 +19,7 @@
 
 namespace Onurb\Doctrine\ORMMetadataGrapher;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\AnnotationParser;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ClassStore;
 use Onurb\Doctrine\ORMMetadataGrapher\YumlMetadataGrapher\ColorManager;
